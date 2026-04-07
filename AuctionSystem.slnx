@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="Business/Business.csproj" Id="3f5cc89c-68d5-4d78-8874-500ced2f04fb" />
+  <Project Path="Data/Data.csproj" Id="d839241f-2126-4f26-b80c-555484b60e38" />
   <Project Path="MainApp/MainApp.csproj" />
 </Solution>
