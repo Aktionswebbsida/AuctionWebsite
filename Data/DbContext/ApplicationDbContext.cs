@@ -1,10 +1,41 @@
-﻿using System;
+﻿using Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Data.DbContext
 {
-    internal class ApplicationDbContext
+    public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+     : IdentityDbContext<User, IdentityRole<int>, int>(options)
     {
+        /// <summary>
+        /// Set of all tracked sessions.
+        /// </summary>
+
+        public DbSet<Ad> Ads { get; set; } = null!;
+
+        public DbSet<Bid> Bids { get; set; } = null!;
+
+        public DbSet <Images> Images { get; set; } = null!;
+
+
+
+        /// <inheritdoc cref="Microsoft.EntityFrameworkCore.DbContext.OnModelCreating"/>
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            // ============================================
+            // SESSION ENTITY CONFIGURATION
+            // ============================================
+
+
+        }
+
+
+
     }
 }
