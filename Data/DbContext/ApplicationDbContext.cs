@@ -28,6 +28,12 @@ namespace Data.DbContext
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Bid>()
+        .HasOne(b => b.User)
+        .WithMany()
+        .HasForeignKey(b => b.UserId)
+        .OnDelete(DeleteBehavior.Restrict);
+
             // ============================================
             // SESSION ENTITY CONFIGURATION
             // ============================================
