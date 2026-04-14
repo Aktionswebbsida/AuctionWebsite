@@ -49,7 +49,57 @@ namespace Data.DbContext
         /// <returns></returns>
         private async Task SeedAds()
         {
-          
+          if (await dbContext.Ads.AnyAsync()) return;
+
+
+            var seller = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == "Seller1@seller.com");
+            var customer = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == "Customer1@customer.com");
+           if (seller == null || customer == null)
+            {
+                throw new Exception("Seller or Customer user not found. Ensure users are seeded before ads.");
+            }
+            var ad1 = new Ad
+            {
+                Title = "iPhone 12",
+                Description = "A barely used iPhone 12 in excellent condition.",
+                StartingPrice = 500,
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddDays(7),
+                SellerId = seller.Id,
+
+
+            };
+
+
+
+            var bid1 = new Bid
+            { 
+                BidAmount = 550,
+                BidDate = DateTime.UtcNow,
+                UserId = customer.Id,
+                Ad = ad1
+            };
+            
+
+        
+     
+
+            var Image1 = new Images
+            {
+                Url = "https://example.com/iphone12.jpg",
+                    Description = "Front view of the iPhone 12",
+                Ad = ad1
+            };
+
+           
+             await dbContext.Ads.AddAsync(ad1);
+            await dbContext.Bids.AddAsync(bid1);
+            await dbContext.Images.AddAsync(Image1);
+
+            await dbContext.SaveChangesAsync();
+
+
+
         }
 
         private async Task AddRoleIfNotExisting(string roleName)
