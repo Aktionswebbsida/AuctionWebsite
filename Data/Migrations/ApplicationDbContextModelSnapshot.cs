@@ -65,7 +65,7 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BidID"));
 
-                    b.Property<int>("AdId")
+                    b.Property<int>("AdID")
                         .HasColumnType("int");
 
                     b.Property<decimal>("BidAmount")
@@ -79,7 +79,7 @@ namespace Data.Migrations
 
                     b.HasKey("BidID");
 
-                    b.HasIndex("AdId");
+                    b.HasIndex("AdID");
 
                     b.HasIndex("UserId");
 
@@ -94,7 +94,7 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImageID"));
 
-                    b.Property<int>("AdId")
+                    b.Property<int>("AdID")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -107,7 +107,7 @@ namespace Data.Migrations
 
                     b.HasKey("ImageID");
 
-                    b.HasIndex("AdId");
+                    b.HasIndex("AdID");
 
                     b.ToTable("Images");
                 });
@@ -346,7 +346,7 @@ namespace Data.Migrations
                     b.HasOne("Data.Entities.User", "Seller")
                         .WithMany("Ads")
                         .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Seller");
@@ -355,9 +355,9 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.Bid", b =>
                 {
                     b.HasOne("Data.Entities.Ad", "Ad")
-                        .WithMany()
-                        .HasForeignKey("AdId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("Bids")
+                        .HasForeignKey("AdID")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Data.Entities.User", "User")
@@ -374,9 +374,9 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.Images", b =>
                 {
                     b.HasOne("Data.Entities.Ad", "Ad")
-                        .WithMany()
-                        .HasForeignKey("AdId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("Images")
+                        .HasForeignKey("AdID")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Ad");
@@ -431,6 +431,13 @@ namespace Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Entities.Ad", b =>
+                {
+                    b.Navigation("Bids");
+
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("Data.Entities.User", b =>

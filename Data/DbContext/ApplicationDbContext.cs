@@ -34,6 +34,23 @@ namespace Data.DbContext
         .HasForeignKey(b => b.UserId)
         .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Bid>().HasOne(b => b.Ad)
+                .WithMany(a => a.Bids).
+                HasForeignKey(b => b.AdID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Ad>()
+                .HasOne(a => a.Seller)
+                .WithMany(u => u.Ads)
+                .HasForeignKey(a => a.SellerId)
+                .OnDelete(DeleteBehavior.Restrict);
+             
+            builder.Entity<Images>()
+                .HasOne(i => i.Ad)
+                .WithMany(a => a.Images)
+                .HasForeignKey(i => i.AdID)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // ============================================
             // SESSION ENTITY CONFIGURATION
             // ============================================

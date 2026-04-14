@@ -16,7 +16,7 @@ namespace Data.Entities
 
         public User User { get; set; } = null!;
 
-        public int AdId { get; set; }
+        public int AdID { get; set; }
 
         public Ad Ad { get; set; } = null!;
     }

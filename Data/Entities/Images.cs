@@ -14,7 +14,7 @@ namespace Data.Entities
        
         public string Url { get; set; } = string.Empty;
 
-        public int AdId { get; set; }
+        public int AdID { get; set; }
 
         public Ad Ad { get; set; } = null!;
 

@@ -67,36 +67,44 @@ namespace Data.DbContext
                 EndDate = DateTime.UtcNow.AddDays(7),
                 SellerId = seller.Id,
 
+                Bids = new List<Bid>
+                {
+                    new Bid
+                    {
+                       BidAmount = 550,
+                          BidDate = DateTime.UtcNow.AddDays(1),
+                          UserId = customer.Id
+                         
+                         
+                    }
+                },
+
+                Images = new List<Images>
+                {
+                    new Images
+                    {
+                       Url = "https://example.com/iphone12.jpg",
+                          Description = "Front view of the iPhone 12",
+                        
+
+                    }
+                }
+
+
+
+
+
 
             };
 
-
-
-            var bid1 = new Bid
-            { 
-                BidAmount = 550,
-                BidDate = DateTime.UtcNow,
-                UserId = customer.Id,
-                Ad = ad1
-            };
-            
-
-        
-     
-
-            var Image1 = new Images
-            {
-                Url = "https://example.com/iphone12.jpg",
-                    Description = "Front view of the iPhone 12",
-                Ad = ad1
-            };
-
-           
-             await dbContext.Ads.AddAsync(ad1);
-            await dbContext.Bids.AddAsync(bid1);
-            await dbContext.Images.AddAsync(Image1);
+            await dbContext.Ads.AddAsync(ad1);
 
             await dbContext.SaveChangesAsync();
+
+
+
+
+
 
 
 

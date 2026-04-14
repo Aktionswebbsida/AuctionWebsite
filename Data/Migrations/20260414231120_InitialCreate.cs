@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class FinalInitialCreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -100,7 +100,7 @@ namespace Data.Migrations
                         column: x => x.SellerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -197,17 +197,17 @@ namespace Data.Migrations
                     BidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     BidDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    AdId = table.Column<int>(type: "int", nullable: false)
+                    AdID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bids", x => x.BidID);
                     table.ForeignKey(
-                        name: "FK_Bids_Ads_AdId",
-                        column: x => x.AdId,
+                        name: "FK_Bids_Ads_AdID",
+                        column: x => x.AdID,
                         principalTable: "Ads",
                         principalColumn: "AdID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Bids_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -224,17 +224,17 @@ namespace Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AdId = table.Column<int>(type: "int", nullable: false)
+                    AdID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Images", x => x.ImageID);
                     table.ForeignKey(
-                        name: "FK_Images_Ads_AdId",
-                        column: x => x.AdId,
+                        name: "FK_Images_Ads_AdID",
+                        column: x => x.AdID,
                         principalTable: "Ads",
                         principalColumn: "AdID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -282,9 +282,9 @@ namespace Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bids_AdId",
+                name: "IX_Bids_AdID",
                 table: "Bids",
-                column: "AdId");
+                column: "AdID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bids_UserId",
@@ -292,9 +292,9 @@ namespace Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Images_AdId",
+                name: "IX_Images_AdID",
                 table: "Images",
-                column: "AdId");
+                column: "AdID");
         }
 
         /// <inheritdoc />
