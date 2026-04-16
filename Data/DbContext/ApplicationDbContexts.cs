@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Data.DbContext
 {
-    public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public partial class ApplicationDbContexts(DbContextOptions<ApplicationDbContexts> options)
      : IdentityDbContext<User, IdentityRole<int>, int>(options)
     {
         /// <summary>

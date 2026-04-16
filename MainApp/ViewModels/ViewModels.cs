@@ -1,6 +1,6 @@
 ﻿namespace MainApp.ViewModels
 {
-    public class ViewModel
+    public class ViewModels
     {
     }
 }

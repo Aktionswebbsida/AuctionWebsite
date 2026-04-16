@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Data.DbContext
 {
-    public class DataInitializer(ApplicationDbContext dbContext, UserManager<User> userManager)
+    public class DataInitializer(ApplicationDbContexts dbContext, UserManager<User> userManager)
     {
         /// <summary>
         /// Seeds initial data asynchronously.

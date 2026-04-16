@@ -1,8 +1,9 @@
+
+using Data.DbContext;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Data;
-using Data.DbContext;
+using ApplicationDbContext = Data.DbContext.ApplicationDbContext;
 
 namespace MainApp;
 
@@ -14,12 +15,12 @@ public class Program
 
         // Add services to the container.
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        builder.Services.AddDbContext<ApplicationDbContexts>(options =>
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
                       .AddRoles<IdentityRole<int>>()
-                      .AddEntityFrameworkStores<ApplicationDbContext>();
+                      .AddEntityFrameworkStores<ApplicationDbContexts>();
 
 
         builder.Services.AddTransient<DataInitializer>();
