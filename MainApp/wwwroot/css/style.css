@@ -451,7 +451,37 @@ textarea.input {
 
 .header-logo {
   float: left;
+  margin-top:25px;
+  
 }
+
+    .header-logo .logo {
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .header-logo .logo span {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-family: 'Montserrat',"Segoe UI", sans-serif;
+            letter-spacing: -1px;
+            line-height: 1;
+            display:inline-block;
+        }
+
+        .header-logo .logo span b {
+            color: #D10024;
+            font-weight:900;
+        }
+
+        .header-logo .logo:hover span {
+            opacity: 0.5;
+            transition: 0.2s ease-in-out;
+        }
+
+
 
 .header-logo .logo img {
   display: block;
