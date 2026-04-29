@@ -17,7 +17,7 @@ namespace Business.Services
             _addRepository = addRepository;
         }
 
-        public async Task<AdDto> CreateAdAsync(AdDto adDto)
+        public async Task<AdCreateDto> CreateAdAsync(AdCreateDto adDto)
         {
             try
             {
@@ -29,12 +29,23 @@ namespace Business.Services
                     StartingPrice = adDto.StartingPrice,
                     StartDate = adDto.StartDate,
                     EndDate = adDto.EndDate,
-                    SellerId = adDto.SellerId
+                    SellerId = adDto.SellerId,
+                    
+                    
+
+                    Images = adDto .Images.Select(img => new Images
+                    {
+                        Url = img.Url,
+                        Description = img.Description
+
+                    }).ToList()
                 }
                  ;
                  await _addRepository.AddAdAsync(AdDTO);
                 await _addRepository.SaveChangesAsync();
-               return adDto;
+
+                 
+                return adDto;
 
             }
             catch (Exception ex)
@@ -70,6 +81,38 @@ namespace Business.Services
             }
         }
 
+        public async Task<UpdateAdDto?> GetAdByIdAsync(int id)
+        {
+            try
+            {
+
+                var ad = await _addRepository.GetAdByIdAsync(id);
+
+                if (ad == null) return null;
+
+                return new UpdateAdDto
+                {
+                    Title = ad.Title,
+                    Description = ad.Description,
+                    StartingPrice = ad.StartingPrice,
+                    StartDate = ad.StartDate,
+                    EndDate = ad.EndDate,
+
+                    Images = ad.Images.Select(img => new UpdateImagesDto
+                    {
+                        Url = img.Url,
+                        Description = img.Description,
+                    }).ToList(),
+
+                };
+            }catch (Exception ex)
+            {
+                // Log the exception (you can use a logging framework here)
+                Console.WriteLine($"An error occurred while retrieving ad: {ex.Message}");
+                throw; // Rethrow the exception to be handled by the caller
+            }
+        }
+
         public async Task<IEnumerable<AdDto>> GetAllAdsAsync()
         {
             try
@@ -86,7 +129,14 @@ namespace Business.Services
                         StartingPrice = ad.StartingPrice,
                         StartDate = ad.StartDate,
                         EndDate = ad.EndDate,
-                        SellerId = ad.SellerId
+                        SellerId = ad.SellerId,
+                        SellerName = ad.Seller?.FirstName ?? "Umknown seller", // Assuming User entity has a Name property
+                        Images = ad.Images.Select(img => new ImagesDto
+                        {
+                            Url = img.Url,
+                            Description = img.Description
+                        }).ToList()
+
                     });
                 }
                 return adDtos;
@@ -100,7 +150,9 @@ namespace Business.Services
             }
         }
 
-        public async Task UpdateAdAsync(AdDto adDto)
+       
+
+        public async Task UpdateAdAsync(UpdateAdDto adDto)
         {
             try
             {
@@ -112,7 +164,13 @@ namespace Business.Services
                     adToUpdate.StartingPrice = adDto.StartingPrice;
                     adToUpdate.StartDate = adDto.StartDate;
                     adToUpdate.EndDate = adDto.EndDate;
-                    adToUpdate.SellerId = adDto.SellerId;
+
+                    adToUpdate.Images.Clear();
+                   adToUpdate.Images = adDto.Images.Select(img => new Images
+                    {
+                        Url = img.Url,
+                        Description = img.Description
+                    }).ToList();
 
                     await _addRepository.UpdateAdAsync(adToUpdate);
                     await _addRepository.SaveChangesAsync();
@@ -129,5 +187,7 @@ namespace Business.Services
                 throw; // Rethrow the exception to be handled by the caller
             }
         }
+
+        
     }
 }

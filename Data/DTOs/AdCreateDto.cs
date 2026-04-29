@@ -1,13 +1,12 @@
-﻿using Data.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Data.DTOs
 {
-    public class AdDto
+    public class AdCreateDto
     {
-        public int AdID { get; set; }
+       
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
@@ -19,11 +18,8 @@ namespace Data.DTOs
 
         public int SellerId { get; set; }
 
-        public string SellerName { get; set; } = string.Empty;
 
 
-
-
-        public ICollection<ImagesDto> Images { get; set; } = new List<ImagesDto>();
+        public ICollection<ImagesCreateDto> Images { get; set; } = new List<ImagesCreateDto>();
     }
 }

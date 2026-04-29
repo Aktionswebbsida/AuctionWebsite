@@ -23,12 +23,13 @@ namespace Data.Repositories
 
         public async Task<IEnumerable<Ad>> GetAllAdsAsync()
         {
-            return await _dbContext.Ads.ToListAsync();
+            return await _dbContext.Ads.Include(x => x.Seller).Include(x => x.Images).ToListAsync();
         }
 
         public async Task<Ad?> GetAdByIdAsync(int id)
         {
-            return await _dbContext.Ads.FirstOrDefaultAsync(ad => ad.AdID == id);
+            return await _dbContext.Ads.Include(x => x.Seller).Include(x => x.Images).FirstOrDefaultAsync(x=>x.AdID == id);
+
         }
 
 

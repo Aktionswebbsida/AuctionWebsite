@@ -1,4 +1,7 @@
+using Business.Interfaces;
+using Business.Services;
 using Data.DbContext;
+using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContexts>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddScoped<IAddRepository, AddRepository>();
+builder.Services.AddScoped<IAdInterface, AdService>();
 
 var app = builder.Build();
 

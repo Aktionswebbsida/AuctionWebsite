@@ -1,12 +1,13 @@
-﻿using Data.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Data.DTOs
 {
-    public class AdDto
+    public class UpdateAdDto
     {
+        [JsonIgnore]
         public int AdID { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -17,13 +18,11 @@ namespace Data.DTOs
 
         public DateTime EndDate { get; set; }
 
-        public int SellerId { get; set; }
-
-        public string SellerName { get; set; } = string.Empty;
+      
 
 
 
 
-        public ICollection<ImagesDto> Images { get; set; } = new List<ImagesDto>();
+        public ICollection<UpdateImagesDto> Images { get; set; } = new List<UpdateImagesDto>();
     }
 }
