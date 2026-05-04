@@ -27,7 +27,10 @@ public class Program
 
 
 
-
+        builder.Services.AddHttpClient("APIClient", client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7284");
+        });
 
 
         var app = builder.Build();
