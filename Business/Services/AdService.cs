@@ -56,11 +56,11 @@ namespace Business.Services
             }
         }
 
-        public async Task DeleteAdAsync(AdDto adDto)
+        public async Task DeleteAdAsync(int id)
         {
             try
             {
-                var adToDelete = await _addRepository.GetAdByIdAsync(adDto.AdID);
+                var adToDelete = await _addRepository.GetAdByIdAsync(id);
                 if (adToDelete != null)
                 {
                     await _addRepository.DeleteAdAsync(adToDelete);
@@ -68,7 +68,7 @@ namespace Business.Services
                 }
                 else
                 {
-                    Console.WriteLine($"Ad with ID {adDto.AdID} not found.");
+                    Console.WriteLine($"Ad with ID {id} not found.");
                 }
 
             }
@@ -77,7 +77,6 @@ namespace Business.Services
                 // Log the exception (you can use a logging framework here)
                 Console.WriteLine($"An error occurred while deleting the ad: {ex.Message}");
                 throw; // Rethrow the exception to be handled by the caller
-
             }
         }
 

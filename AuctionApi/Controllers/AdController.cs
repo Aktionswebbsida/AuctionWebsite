@@ -61,13 +61,12 @@ namespace AuctionApi.Controllers
             }
         }
 
-        [HttpDelete]
-
-        public async Task<IActionResult> DeleteAd(AdDto adDto)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteAd(int id)
         {
             try
             {
-                await _adInterface.DeleteAdAsync(adDto);
+                await _adInterface.DeleteAdAsync(id);
                 return NoContent();
             }
             catch (Exception ex)

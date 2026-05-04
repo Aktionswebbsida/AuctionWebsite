@@ -14,7 +14,7 @@ namespace Business.Interfaces
 
         Task UpdateAdAsync(UpdateAdDto adDto);
 
-        Task DeleteAdAsync(AdDto adDto);
+        Task DeleteAdAsync(int id);
 
 
     }
