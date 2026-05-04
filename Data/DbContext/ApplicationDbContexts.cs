@@ -49,7 +49,7 @@ namespace Data.DbContext
                 .HasOne(i => i.Ad)
                 .WithMany(a => a.Images)
                 .HasForeignKey(i => i.AdID)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // ============================================
             // SESSION ENTITY CONFIGURATION
