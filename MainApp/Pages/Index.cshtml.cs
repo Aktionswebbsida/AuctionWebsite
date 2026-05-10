@@ -31,6 +31,7 @@ namespace MainApp.Pages
                         AdID = x.AdID,
                         Title = x.Title,
                         Description = x.Description,
+                        Place = x.Place,
                         StartDate = x.StartDate,
                         EndDate = x.EndDate,
                         SellerName = x.SellerName,

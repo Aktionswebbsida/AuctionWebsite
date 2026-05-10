@@ -26,6 +26,7 @@ namespace Business.Services
 
                     Title = adDto.Title,
                     Description = adDto.Description,
+                    Place = adDto.Place,
                     StartingPrice = adDto.StartingPrice,
                     StartDate = adDto.StartDate,
                     EndDate = adDto.EndDate,
@@ -93,6 +94,7 @@ namespace Business.Services
                 {
                     Title = ad.Title,
                     Description = ad.Description,
+                    Place = ad.Place,
                     StartingPrice = ad.StartingPrice,
                     StartDate = ad.StartDate,
                     EndDate = ad.EndDate,
@@ -125,6 +127,7 @@ namespace Business.Services
                         AdID = ad.AdID,
                         Title = ad.Title,
                         Description = ad.Description,
+                        Place = ad.Place,
                         StartingPrice = ad.StartingPrice,
                         StartDate = ad.StartDate,
                         EndDate = ad.EndDate,
@@ -160,6 +163,7 @@ namespace Business.Services
                 {
                     adToUpdate.Title = adDto.Title;
                     adToUpdate.Description = adDto.Description;
+                    adToUpdate.Place = adDto.Place;
                     adToUpdate.StartingPrice = adDto.StartingPrice;
                     adToUpdate.StartDate = adDto.StartDate;
                     adToUpdate.EndDate = adDto.EndDate;

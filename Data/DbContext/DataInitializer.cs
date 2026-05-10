@@ -65,6 +65,7 @@ namespace Data.DbContext
                 StartingPrice = 500,
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddDays(7),
+                Place ="Stockholm",
                 SellerId = seller.Id,
 
                 Bids = new List<Bid>
