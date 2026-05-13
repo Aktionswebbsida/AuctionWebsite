@@ -1,12 +1,35 @@
 ﻿@page
-@model IndexModel
+@model MainApp.Pages.Shared.ShopItemDetailsModel
 @{
-ViewData["Title"] = "Home page";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
+    Layout = "~/Pages/Shared/ShopItem.cshtml";
 }
-@* <section class="py-5 bg-dark">
+<section class="py-5 bg-primary">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
+            <div class="col-md-6">
+                <div class="small mb-1">SKU: BST-498</div>
+                <h1 class="display-5 fw-bolder">Shop item template</h1>
+                <div class="fs-5 mb-5">
+                    <span class="text-decoration-line-through">$45.00</span>
+                    <span>$40.00</span>
+                </div>
+                <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis delectus ipsam minima ea iste laborum vero?</p>
+                <div class="d-flex">
+                    <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
+                    <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                        <i class="bi-cart-fill me-1"></i>
+                        Add to cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Related items section-->
+<section class="py-5 bg-dark">
     <div class="container px-4 px-lg-5 mt-5">
-        <h1 class="text-center text-white">Popular Auctions</h1>
+        <h2 class="fw-bolder mb-4">Related products</h2>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             <div class="col mb-5">
                 <div class="card h-100">
@@ -106,78 +129,6 @@ ViewData["Title"] = "Home page";
                     </div>
                 </div>
             </div>
-            
         </div>
     </div>
-</section> *@
-
-
-
-                <div id="AdCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        @{
-                            var first = true;
-                        }
-                        @if (Model.Ads != null && Model.Ads.Any())
-                        {
-                            foreach (var ad in Model.Ads)
-                            {
-                                <div class="carousel-item @(first ? "active" : "")">
-                                    <section class="py-5 bg-dark">
-                                        <div class="container px-4 px-lg-5 mt-5">
-                                            <h1 class="text-center text-white">Popular Auctions</h1>
-                                            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                                                <div class="col mb-5">
-                                                    <div class="card h-100">
-                                                        <!-- Product image-->
-                                                        <img class="card-img-top" src="@ad.Images.FirstOrDefault()?.Url" alt="..." />
-                                                        <!-- Product details-->
-                                                        <div class="card-body p-4">
-                                                            <div class="text-center">
-                                                                <!-- Product name-->
-                                                                <h5 class="fw-bolder">@ad.Title</h5>
-                                                                <h5 class="fw-bolder">@ad.Place</h5>
-                                                                <!-- Product price-->
-                                                                $@ad.StartingPrice
-                                                            </div>
-                                                        </div>
-                                                        <!-- Product actions-->
-                                                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                                            <div class="text-center">
-                                                                <a class="btn btn-outline-dark mt-auto" asp-page="/Shared/ShopItemDetails">View Details</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
-                                first = false;
-                            }
-                        }
-                        else
-                        {
-                            <div class="carousel-item active">
-                            <section class="py-5 bg-dark">
-                                <div class="container px-4 px-lg-5 mt-5">
-                                    <h1 class="text-center text-white">No Ads Available</h1>
-                                </div>
-                            </section>
-                            </div>
-                        }
-                    </div>
-
-                    @if (Model.Ads?.Count() > 1)
-                    {
-                        <a class="carousel-control-prev" data-bs-target="#AdCarousel" role="button" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" data-bs-target="#AdCarousel" role="button" data-bs-slide="next">
-                            <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    }
-                </div>
-    
+</section>

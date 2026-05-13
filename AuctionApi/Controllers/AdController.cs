@@ -30,6 +30,20 @@ namespace AuctionApi.Controllers
         
         }
 
+        [HttpGet("{id:int}")]
+
+        public async Task<IActionResult> GetAdbyId(int id)
+        {
+            try
+            {
+                var AdbyId = await _adInterface.GetAdByIdAsync(id);
+                return Ok(AdbyId);
+
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
       
          [HttpPost]
          public async Task<IActionResult> CreateAd(AdCreateDto adDto)
@@ -51,8 +65,8 @@ namespace AuctionApi.Controllers
         {
             try
             {
-                adDto.AdID = id;
-                await _adInterface.UpdateAdAsync(adDto);
+                
+                await _adInterface.UpdateAdAsync(id,adDto);
                 return NoContent();
             }
             catch (Exception ex)

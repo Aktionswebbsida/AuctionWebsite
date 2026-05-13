@@ -81,7 +81,7 @@ namespace Business.Services
             }
         }
 
-        public async Task<UpdateAdDto?> GetAdByIdAsync(int id)
+        public async Task<AdDto?> GetAdByIdAsync(int id)
         {
             try
             {
@@ -90,16 +90,19 @@ namespace Business.Services
 
                 if (ad == null) return null;
 
-                return new UpdateAdDto
+                return new AdDto
                 {
+                    AdID = ad.AdID,
                     Title = ad.Title,
                     Description = ad.Description,
                     Place = ad.Place,
                     StartingPrice = ad.StartingPrice,
                     StartDate = ad.StartDate,
                     EndDate = ad.EndDate,
+                    SellerId = ad.SellerId,
+                    SellerName = ad.Seller?.FirstName ?? "Unkwon seller",
 
-                    Images = ad.Images.Select(img => new UpdateImagesDto
+                    Images = ad.Images.Select(img => new ImagesDto
                     {
                         Url = img.Url,
                         Description = img.Description,
@@ -154,11 +157,11 @@ namespace Business.Services
 
        
 
-        public async Task UpdateAdAsync(UpdateAdDto adDto)
+        public async Task<UpdateAdDto> UpdateAdAsync(int id, UpdateAdDto adDto)
         {
             try
             {
-                var adToUpdate = await _addRepository.GetAdByIdAsync(adDto.AdID);
+                var adToUpdate = await _addRepository.GetAdByIdAsync(id);
                 if (adToUpdate != null)
                 {
                     adToUpdate.Title = adDto.Title;
@@ -177,11 +180,14 @@ namespace Business.Services
 
                     await _addRepository.UpdateAdAsync(adToUpdate);
                     await _addRepository.SaveChangesAsync();
+
+                    
                 }
                 else
                 {
                     Console.WriteLine($"Ad with ID {adDto.AdID} not found.");
                 }
+                return adDto;
             }
             catch (Exception ex)
             {
