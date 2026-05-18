@@ -1,4 +1,4 @@
-﻿namespace MainApp.Seller
+﻿namespace MainApp.Pages.Seller
 {
     public class Seller
     {
