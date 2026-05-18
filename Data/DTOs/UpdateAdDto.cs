@@ -20,7 +20,11 @@ namespace Data.DTOs
 
         public DateTime EndDate { get; set; }
 
-      
+
+        [JsonIgnore]
+        public int SellerId { get; set; }
+
+
 
 
 

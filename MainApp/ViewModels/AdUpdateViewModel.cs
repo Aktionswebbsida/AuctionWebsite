@@ -16,7 +16,7 @@ namespace MainApp.ViewModels
 
         public DateTime EndDate { get; set; }
 
-
+        public int SellerId { get; set; }
 
 
 
