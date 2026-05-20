@@ -3,7 +3,7 @@ using MainApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MainApp.Pages.Shared
+namespace MainApp.Pages.ShopItemsDetails
 {
     public class ShopItemDetailsModel : PageModel
     {

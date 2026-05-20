@@ -1,6 +1,9 @@
 ﻿using Business.Interfaces;
 using Data.DTOs;
+using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuctionApi.Controllers
@@ -10,10 +13,12 @@ namespace AuctionApi.Controllers
     public class AdController : ControllerBase
     {
         public readonly IAdInterface _adInterface;
+      
 
         public AdController(IAdInterface adInterface)
         {
             _adInterface = adInterface;
+            
         }
         [HttpGet]
         public async Task<IActionResult> GetAllAds()
@@ -30,6 +35,22 @@ namespace AuctionApi.Controllers
         
         }
 
+        [HttpGet("seller/{sellerid:int}")]
+        public async Task<IActionResult> GetAllSellerAds(int sellerid)
+        {
+            try
+            {
+                var ads = await _adInterface.GetAllSellerAdsAsync(sellerid);
+                return Ok(ads);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpGet("{id:int}")]
 
         public async Task<IActionResult> GetAdbyId(int id)
@@ -44,12 +65,14 @@ namespace AuctionApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-      
+
+       
          [HttpPost]
-         public async Task<IActionResult> CreateAd(AdCreateDto adDto)
+        public async Task<IActionResult> CreateAd(AdCreateDto adDto)
         {
             try
             {
+            
                 var createdAd = await _adInterface.CreateAdAsync(adDto);
                 return Ok(createdAd);
             }

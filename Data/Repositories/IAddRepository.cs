@@ -16,6 +16,8 @@ namespace Data.Repositories
 
         Task<IEnumerable<Ad>> GetAllAdsAsync();
 
+        Task<IEnumerable<Ad>> GetAllSellerAds(int sellerId);
+
         Task SaveChangesAsync ();
     }
 }

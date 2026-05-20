@@ -125,7 +125,7 @@ namespace MainApp.Pages.Seller
 
 
             var client = HttpClientFactory.CreateClient("APIClient");
-            var response = await client.PutAsJsonAsync("api/Ad", UpdateAd);
+            var response = await client.PutAsJsonAsync($"api/Ad/{UpdateAd.AdID}", UpdateAd);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToPage("/Index");

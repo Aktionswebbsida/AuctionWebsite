@@ -51,5 +51,10 @@ namespace Data.Repositories
         {
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Ad>> GetAllSellerAds(int sellerId)
+        {
+            return await _dbContext.Ads.Include(x => x.Seller).Include(x => x.Images).Where(x => x.SellerId == sellerId).ToListAsync();
+        }
     }
 }

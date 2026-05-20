@@ -10,6 +10,8 @@ namespace Business.Interfaces
         Task<AdCreateDto> CreateAdAsync(AdCreateDto adDto);
         Task<IEnumerable<AdDto>> GetAllAdsAsync();
 
+        Task<IEnumerable<AdDto>> GetAllSellerAdsAsync(int sellerId);
+
         Task<AdDto?> GetAdByIdAsync(int id);
 
         Task<UpdateAdDto> UpdateAdAsync(int id, UpdateAdDto updateAdDto);

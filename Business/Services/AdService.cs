@@ -155,7 +155,42 @@ namespace Business.Services
             }
         }
 
-       
+        public  async Task<IEnumerable<AdDto>> GetAllSellerAdsAsync(int sellerId)
+        {
+            try
+            {
+                var ads = await _addRepository.GetAllSellerAds(sellerId);
+                var adDtos = new List<AdDto>();
+                foreach (var ad in ads)
+                {
+                    adDtos.Add(new AdDto
+                    {
+                        AdID = ad.AdID,
+                        Title = ad.Title,
+                        Description = ad.Description,
+                        Place = ad.Place,
+                        StartingPrice = ad.StartingPrice,
+                        StartDate = ad.StartDate,
+                        EndDate = ad.EndDate,
+                        SellerId = ad.SellerId,
+                        SellerName = ad.Seller?.FirstName ?? "Umknown seller", // Assuming User entity has a Name property
+                        Images = ad.Images.Select(img => new ImagesDto
+                        {
+                            Url = img.Url,
+                            Description = img.Description
+                        }).ToList()
+
+                    });
+                }
+                return adDtos;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while retrieving seller ads: {ex.Message}");
+                throw;
+            }
+        }
 
         public async Task<UpdateAdDto> UpdateAdAsync(int id, UpdateAdDto adDto)
         {
