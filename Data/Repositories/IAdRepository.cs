@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Data.Repositories
 {
-    public interface IAddRepository
+    public interface IAdRepository
     {
         Task<Ad> AddAdAsync(Ad ad);
         Task UpdateAdAsync(Ad ad);

@@ -10,9 +10,9 @@ namespace Business.Services
 {
     public class AdService : IAdInterface
     { 
-        private readonly IAddRepository _addRepository;
+        private readonly IAdRepository _addRepository;
 
-        public AdService(IAddRepository addRepository)
+        public AdService(IAdRepository addRepository)
         {
             _addRepository = addRepository;
         }

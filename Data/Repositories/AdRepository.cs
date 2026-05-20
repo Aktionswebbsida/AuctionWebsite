@@ -7,11 +7,11 @@ using System.Text;
 
 namespace Data.Repositories
 {
-    public class AddRepository : IAddRepository
+    public class AdRepository : IAdRepository
     {
         private readonly ApplicationDbContexts _dbContext;
 
-            public AddRepository(ApplicationDbContexts dbContext)
+            public AdRepository(ApplicationDbContexts dbContext)
             {
                 _dbContext = dbContext;
         }
