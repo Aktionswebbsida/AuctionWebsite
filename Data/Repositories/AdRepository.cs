@@ -37,7 +37,7 @@ namespace Data.Repositories
         {
             
              _dbContext.Ads.Update(ad);
-              await _dbContext.SaveChangesAsync();
+       
 
 
         }
@@ -45,7 +45,7 @@ namespace Data.Repositories
         public async Task DeleteAdAsync(Ad ad)
         {
             _dbContext.Ads.Remove(ad);
-            await _dbContext.SaveChangesAsync();
+          
         }
         public async Task SaveChangesAsync()
         {

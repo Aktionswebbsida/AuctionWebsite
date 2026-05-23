@@ -1,7 +1,11 @@
+using AuctionApi.Hubs;
 using Business.Interfaces;
 using Business.Services;
 using Data.DbContext;
+using Data.DTOs;
+using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -18,8 +24,19 @@ builder.Services.AddDbContext<ApplicationDbContexts>(options =>
 
 builder.Services.AddScoped<IAdRepository, AdRepository>();
 builder.Services.AddScoped<IAdInterface, AdService>();
+builder.Services.AddScoped<IBidRepository, BidRepository>();
+builder.Services.AddScoped<IBidInterface, BidService>();
 
 var app = builder.Build();
+
+app.MapPost("/bids", async (BidCreateDto bidCreateDto, IBidInterface bidservice, IHubContext<BidHub> hub) =>
+{
+    await bidservice.CreateBidAsync(bidCreateDto);
+    await hub.Clients.All.SendAsync("Alert", bidCreateDto);
+    return Results.Accepted();
+
+
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -37,5 +54,5 @@ app.MapControllers();
 
 app.MapGet("/", () => Results.Redirect("/swagger"))
              .ExcludeFromDescription();
-
+app.MapHub<BidHub>("/bid");
 app.Run();
