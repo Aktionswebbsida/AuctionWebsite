@@ -75,6 +75,8 @@ namespace Lärplattform.Areas.Identity.Pages.Account
 
             public string Country { get; set; } = string.Empty;
 
+            public string Street {  get; set; } = string.Empty;
+
 
             [DataType(DataType.Text)]
             [Display(Name = "User role")]
@@ -127,6 +129,7 @@ namespace Lärplattform.Areas.Identity.Pages.Account
                 user.Address = Input.Adress;
                 user.City = Input.City;
                 user.Country = Input.Country;
+                user.Street = Input.Street;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);

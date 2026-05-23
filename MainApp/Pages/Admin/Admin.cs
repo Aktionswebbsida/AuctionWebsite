@@ -1,4 +1,4 @@
-﻿namespace MainApp.Admin
+﻿namespace MainApp.Pages.Admin
 {
     public class Admin
     {

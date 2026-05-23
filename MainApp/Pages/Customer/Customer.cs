@@ -1,4 +1,4 @@
-﻿namespace MainApp.Customer
+﻿namespace MainApp.Pages.Customer
 {
     public class Customer
     {
