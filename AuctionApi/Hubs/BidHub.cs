@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Business.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 
 namespace AuctionApi.Hubs
 {
-    public class BidHub : Hub
+    public class BidHub : Hub<IBidHubInterface>
     {
         public override async Task OnConnectedAsync()
         {

@@ -14,9 +14,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+builder.Services.AddTransient<IHubContext>(sp =>
+    (IHubContext)sp.GetRequiredService<IHubContext<BidHub>>());
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowMainApp", policy =>
+    {
+        policy.WithOrigins("https://localhost:7152")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContexts>(options =>
@@ -29,14 +42,7 @@ builder.Services.AddScoped<IBidInterface, BidService>();
 
 var app = builder.Build();
 
-app.MapPost("/bids", async (BidCreateDto bidCreateDto, IBidInterface bidservice, IHubContext<BidHub> hub) =>
-{
-    await bidservice.CreateBidAsync(bidCreateDto);
-    await hub.Clients.All.SendAsync("Alert", bidCreateDto);
-    return Results.Accepted();
 
-
-});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -47,9 +53,27 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 
+app.UseCors("AllowMainApp");
 app.UseAuthorization();
+app.MapPost("/bids", async (BidCreateDto bidCreateDto, IBidInterface bidservice) =>
+{
+    await bidservice.CreateBidAsync(bidCreateDto);
+   
+    return Results.Accepted();
 
+
+});
+
+app.MapPut("/bids/{id}", async (int id, BidUpdateDto bidUpdateDto, IBidInterface bidservice) =>
+{
+    await bidservice.UpdateBid(id, bidUpdateDto);
+  
+    return Results.Accepted();
+
+
+});
 app.MapControllers();
 
 app.MapGet("/", () => Results.Redirect("/swagger"))

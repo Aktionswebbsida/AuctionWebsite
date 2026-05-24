@@ -15,17 +15,25 @@
                         <h1 class="display-5 fw-bolder"> ItemName: @Model.Ads.Title</h1>
                         <div class="fs-5 mb-5">
                     <p class="lead"> SellerName: @Model.Ads.SellerName</p>
-                    <span> Price: @Model.Ads.StartingPrice </span>
+                    <span> Price: $<strong id="highestBid_@Model.Ads.AdID"> @Model.Ads.StartingPrice </strong> </span>
                         </div>
                         <p class="lead"> Description: @Model.Ads.Description</p>
                 <p class="lead"> Place: @Model.Ads.Place</p>
-                        <div class="d-flex">
-                            <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button">
-                                <i class="bi-cart-fill me-1"></i>
-                                Bid Now
-                            </button>
-                        </div>
+                       <form id="bidForm" method="post" class="mt-4">
+                    <input type="hidden" asp-for="AddBid.AdID" value="@Model.Ads.AdID" class="form-control" />
+
+                    <div class="d-flex">
+
+                        <input asp-for="AddBid.BidAmount" id="bidAmountInput" class="form-control text-center m-3" type="number" step="0.01" style="max-width: 8rem;" placeholder="e.g. Bid $" />
+
+                        <button class="btn btn-dark flex-shrink-0" type="submit">
+                            <i class="bi-hammer me-1"></i>
+                            Place bid
+                        </button>
+                    </div>
+                    <div id="errorMessages" class="text-warning mt-2 fw-bold"></div>
+                        <div asp-validation-summary="All" class="text-warning mt-2 fw-bold"></div>
+                       </form>
                     </div>
                 </div>
             </div>
@@ -136,6 +144,56 @@
     </div>
 </section>
 
-    
+    @section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+
+    <script type="text/javascript">
+        const connection = new signalR.HubConnectionBuilder()
+        .withUrl("https://localhost:7284/bid?clientId=@Model.Ads.AdID")
+        .withAutomaticReconnect()
+        .build();
+
+        connection.on("UpdateHighestBid", function (adId, amount) {
+        const bidDisplay = document.getElementById("highestBid_" + adId);
+        if (bidDisplay) {
+        bidDisplay.innerText = amount;
+        bidDisplay.style.color = "#28a745";
+        bidDisplay.style.transition = "color 0.5s ease";
+        setTimeout(() => { bidDisplay.style.color = ""; }, 3000);
+        }
+        });
+
+        connection.start()
+        .then(() => console.log("SignalR Connected"))
+        .catch(err => console.error(err.toString()));
+
+        document.getElementById("bidForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const errorDiv = document.getElementById("errorMessages");
+        errorDiv.innerText = "";
+
+        try {
+        const response = await fetch(window.location.href, {
+        method: "POST",
+        body: formData,
+        headers: {
+        "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+        }
+        });
+
+        if (response.ok) {
+        document.getElementById("bidAmountInput").value = "";
+        } else {
+        const errorText = await response.text();
+        errorDiv.innerText = errorText || "Bid was too low!";
+        }
+        } catch (err) {
+        errorDiv.innerText = "Connection error.";
+        }
+        });
+     </script>
+    }
 
 <!-- Related items section-->

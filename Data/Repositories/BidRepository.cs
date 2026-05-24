@@ -15,8 +15,13 @@ namespace Data.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<Bid> CreateBidAsync(Bid bid)
+        public async Task<Bid?> CreateBidAsync(Bid bid)
         {
+            var higestbid = _dbContext.Bids.Include(x => x.Ad).Include(x => x.User).Where(x => x.AdID == bid.AdID).OrderByDescending(x => x.BidAmount).FirstOrDefault();
+            if(higestbid != null && bid.BidAmount <= higestbid.BidAmount)
+            {
+                return null;
+            }
           await _dbContext.Bids.AddAsync(bid);
             return bid;
         }

@@ -2,6 +2,7 @@
 using Data.DTOs;
 using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,10 +12,12 @@ namespace Business.Services
     public class BidService : IBidInterface
     {
         public readonly IBidRepository _IBidRepository;
+        public readonly IHubContext _HubContext;
 
-        public BidService(IBidRepository IBidRepository)
+        public BidService(IBidRepository IBidRepository, IHubContext hubContext)
         {
             _IBidRepository = IBidRepository;
+            _HubContext = hubContext;
         }
         public async Task<BidCreateDto> CreateBidAsync(BidCreateDto bid)
         {
@@ -31,8 +34,11 @@ namespace Business.Services
                 await _IBidRepository.CreateBidAsync(newBid);
                 await _IBidRepository.SaveChangesAsync();
 
+                await _HubContext.Clients.Group($"clientId:{bid.AdID}").SendAsync("UpdateHighestBid", bid.AdID, bid.BidAmount);
+
                 return bid;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while creating the bid: {ex.Message}");
                 throw;
@@ -44,13 +50,14 @@ namespace Business.Services
             try
             {
                 var bidToDelete = await _IBidRepository.GetBidAsync(id);
-                if(bidToDelete != null)
+                if (bidToDelete != null)
                 {
                     await _IBidRepository.DeleteBid(bidToDelete);
                     await _IBidRepository.SaveChangesAsync();
                 }
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while deleting the bid: {ex.Message}");
                 throw;
@@ -61,7 +68,7 @@ namespace Business.Services
         {
             try
             {
-               var allbids = await _IBidRepository.GetAllBidAsync();
+                var allbids = await _IBidRepository.GetAllBidAsync();
 
                 var biddto = allbids.Select(x => new BidDto
                 {
@@ -75,9 +82,10 @@ namespace Business.Services
                 });
 
                 return biddto;
-               
 
-            }catch (Exception ex)
+
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while retrieving bids: {ex.Message}");
                 throw;
@@ -89,7 +97,7 @@ namespace Business.Services
             try
             {
                 var bidId = await _IBidRepository.GetBidAsync(id);
-                if(bidId != null)
+                if (bidId != null)
                 {
                     return new BidDto
                     {
@@ -101,10 +109,11 @@ namespace Business.Services
                     };
                 }
                 return null;
-               
-                
 
-            }catch (Exception ex)
+
+
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while retrieving bid: {ex.Message}");
                 throw;
@@ -126,13 +135,15 @@ namespace Business.Services
                     await _IBidRepository.UpdateBid(bidToUpdate);
                     await _IBidRepository.SaveChangesAsync();
                 }
+                await _HubContext.Clients.Group($"clientId:{bid.AdID}").SendAsync("UpdateHighestBid", bid.AdID, bid.BidAmount);
                 return bid;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while updating the bid: {ex.Message}");
                 throw;
             }
-          
+
         }
     }
 }
