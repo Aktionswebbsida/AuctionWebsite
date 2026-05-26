@@ -41,5 +41,7 @@ namespace Data.DTOs
 
 
         public ICollection<UpdateImagesDto> Images { get; set; } = new List<UpdateImagesDto>();
+
+        public bool IsDeleted { get; set; }
     }
 }

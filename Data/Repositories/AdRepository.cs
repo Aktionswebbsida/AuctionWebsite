@@ -23,12 +23,12 @@ namespace Data.Repositories
 
         public async Task<IEnumerable<Ad>> GetAllAdsAsync()
         {
-            return await _dbContext.Ads.Include(x => x.Seller).Include(x => x.Images).Include(x => x.Bids).ThenInclude(b => b.User).ToListAsync();
+            return await _dbContext.Ads.Include(x => x.Seller).Include(x => x.Images).Include(x => x.Bids).ThenInclude(b => b.User).Where(x => !x.IsDeleted).ToListAsync();
         }
 
         public async Task<Ad?> GetAdByIdAsync(int id)
         {
-            return await _dbContext.Ads.Include(x => x.Seller).Include(x => x.Images).Include(x => x.Bids).ThenInclude(b => b.User).FirstOrDefaultAsync(x=>x.AdID == id);
+            return await _dbContext.Ads.Include(x => x.Seller).Include(x => x.Images).Include(x => x.Bids).ThenInclude(b => b.User).Where(x => !x.IsDeleted).FirstOrDefaultAsync(x=>x.AdID == id);
 
         }
 
@@ -42,10 +42,16 @@ namespace Data.Repositories
 
         }
 
-        public async Task DeleteAdAsync(Ad ad)
+        public async Task<Ad?> DeleteAdAsync(int id)
         {
-            _dbContext.Ads.Remove(ad);
-          
+            var Ad = await GetAdByIdAsync(id);
+            if (Ad != null)
+            {
+                Ad.IsDeleted = true;
+            }
+
+            return Ad;
+
         }
         public async Task SaveChangesAsync()
         {
@@ -54,7 +60,7 @@ namespace Data.Repositories
 
         public async Task<IEnumerable<Ad>> GetAllSellerAds(int sellerId)
         {
-            return await _dbContext.Ads.Include(x => x.Seller).Include(x => x.Images).Where(x => x.SellerId == sellerId).ToListAsync();
+            return await _dbContext.Ads.Include(x => x.Seller).Include(x => x.Images).Where(x => x.SellerId == sellerId).Where(x => !x.IsDeleted).ToListAsync();
         }
     }
 }

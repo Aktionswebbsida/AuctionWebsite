@@ -120,7 +120,7 @@ ViewData["Title"] = "Home page";
         <h1 class="text-center text-white">All Auctions</h1>
         @if(User.IsInRole("Seller") || User.IsInRole("Admin"))
         {
-            <a class="btn btn-primary mb-3" asp-page="/Seller/AdCreate">Create Ad</a>
+        
             <a class="btn btn-primary mb-3" asp-page="/Seller/MyAds">My Ads</a>
         }
         

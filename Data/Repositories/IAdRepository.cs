@@ -10,7 +10,7 @@ namespace Data.Repositories
         Task<Ad> AddAdAsync(Ad ad);
         Task UpdateAdAsync(Ad ad);
 
-        Task DeleteAdAsync(Ad ad);
+        Task<Ad?> DeleteAdAsync(int id);
 
         Task<Ad?> GetAdByIdAsync(int adId);
 

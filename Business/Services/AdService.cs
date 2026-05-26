@@ -64,7 +64,7 @@ namespace Business.Services
                 var adToDelete = await _addRepository.GetAdByIdAsync(id);
                 if (adToDelete != null)
                 {
-                    await _addRepository.DeleteAdAsync(adToDelete);
+                    await _addRepository.DeleteAdAsync(id);
                     await _addRepository.SaveChangesAsync();
                 }
                 else

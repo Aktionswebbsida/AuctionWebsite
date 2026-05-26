@@ -22,11 +22,17 @@ namespace Data.Entities
 
         public User Seller { get; set; } = null!;
 
+        public int? WinnerId { get; set; }
 
+       public User? Winner { get; set; }
       
 
         public ICollection<Images> Images { get; set; } = new List<Images>();
 
         public ICollection<Bid> Bids { get; set; } = new List<Bid>();
+
+        public bool IsClosed { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContexts))]
-    [Migration("20260416183845_InitialAuctionSetup")]
-    partial class InitialAuctionSetup
+    [Migration("20260526223039_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,6 +40,16 @@ namespace Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Place")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SellerId")
                         .HasColumnType("int");
 
@@ -53,9 +63,19 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WinnerId")
+                        .HasColumnType("int");
+
                     b.HasKey("AdID");
 
                     b.HasIndex("SellerId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WinnerId");
 
                     b.ToTable("Ads");
                 });
@@ -347,12 +367,23 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.Ad", b =>
                 {
                     b.HasOne("Data.Entities.User", "Seller")
-                        .WithMany("Ads")
+                        .WithMany()
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Data.Entities.User", null)
+                        .WithMany("Ads")
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("Data.Entities.User", "Winner")
+                        .WithMany()
+                        .HasForeignKey("WinnerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Seller");
+
+                    b.Navigation("Winner");
                 });
 
             modelBuilder.Entity("Data.Entities.Bid", b =>
@@ -366,7 +397,7 @@ namespace Data.Migrations
                     b.HasOne("Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ad");
@@ -379,7 +410,7 @@ namespace Data.Migrations
                     b.HasOne("Data.Entities.Ad", "Ad")
                         .WithMany("Images")
                         .HasForeignKey("AdID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ad");

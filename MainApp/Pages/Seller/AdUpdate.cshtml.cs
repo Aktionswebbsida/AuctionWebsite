@@ -128,7 +128,7 @@ namespace MainApp.Pages.Seller
             var response = await client.PutAsJsonAsync($"api/Ad/{UpdateAd.AdID}", UpdateAd);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Seller/MyAds");
             }
             else
             {
@@ -145,7 +145,7 @@ namespace MainApp.Pages.Seller
             var response = await client.DeleteAsync($"api/Ad/{id}");
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Seller/MyAds");
             }
             else
             {

@@ -89,7 +89,7 @@ namespace MainApp.Pages.Seller
             var response = await client.PostAsJsonAsync("api/Ad", NewAd);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Seller/MyAds");
             }
             else
             {
