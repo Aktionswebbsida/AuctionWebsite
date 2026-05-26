@@ -5,7 +5,9 @@ using Data.Repositories;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Business.Services
 {
@@ -19,7 +21,7 @@ namespace Business.Services
             _IBidRepository = IBidRepository;
             _HubContext = hubContext;
         }
-        public async Task<BidCreateDto> CreateBidAsync(BidCreateDto bid)
+        public async Task<BidCreateDto?> CreateBidAsync(BidCreateDto bid)
         {
             try
             {
@@ -31,10 +33,15 @@ namespace Business.Services
                     UserId = bid.UserId,
                 };
 
-                await _IBidRepository.CreateBidAsync(newBid);
+                var result = await _IBidRepository.CreateBidAsync(newBid);
+                if (result == null)
+                {
+                    return null;
+                }
+
                 await _IBidRepository.SaveChangesAsync();
 
-                await _HubContext.Clients.Group($"clientId:{bid.AdID}").SendAsync("UpdateHighestBid", bid.AdID, bid.BidAmount);
+                await _HubContext.Clients.Group($"adId:{bid.AdID}").SendAsync("UpdateHighestBid", bid.AdID, bid.BidAmount, bid.UserId);
 
                 return bid;
             }
@@ -120,22 +127,45 @@ namespace Business.Services
             }
         }
 
-        public async Task<BidUpdateDto> UpdateBid(int id, BidUpdateDto bid)
+        public async Task<IEnumerable<BidDto>> GetBidsbyAdId(int AdId)
+        {
+            try
+            {
+                var bids = await _IBidRepository.GetBidsByAdIdAsync(AdId);
+
+                return bids.Select(x => new BidDto
+                {
+                    BidID = x.BidID,
+                    BidAmount = x.BidAmount,
+                    BidDate = x.BidDate,
+                    UserId=x.UserId, 
+                    AdID = x.AdID,
+                }).ToList();
+            }catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while retrieving ad bids: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<BidUpdateDto?> UpdateBid(int id, BidUpdateDto bid)
         {
             try
             {
                 var bidToUpdate = await _IBidRepository.GetBidAsync(id);
+                 if(bidToUpdate == null)  return null;
 
-                if (bidToUpdate != null)
-                {
-                    bidToUpdate.BidAmount = bid.BidAmount;
+
+                bidToUpdate.BidAmount = bid.BidAmount;
                     bidToUpdate.BidDate = bid.BidDate;
                     bidToUpdate.UserId = bid.UserId;
                     bidToUpdate.AdID = bid.AdID;
-                    await _IBidRepository.UpdateBid(bidToUpdate);
+
+                   var result = await _IBidRepository.UpdateBid(bidToUpdate);
+                if(result == null) return null;
                     await _IBidRepository.SaveChangesAsync();
-                }
-                await _HubContext.Clients.Group($"clientId:{bid.AdID}").SendAsync("UpdateHighestBid", bid.AdID, bid.BidAmount);
+                
+                await _HubContext.Clients.Group($"adId:{bid.AdID}").SendAsync("UpdateHighestBid", bid.AdID, bid.BidAmount, bid.UserId);
                 return bid;
             }
             catch (Exception ex)

@@ -65,16 +65,23 @@ namespace Lärplattform.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Required(ErrorMessage = "FirstName is needed")]
+            [StringLength(50, ErrorMessage = "FirstName is to long (50 characters max)")]
             public string FirstName { get; set; } = string.Empty;
-
+            [Required(ErrorMessage = "LastName is needed")]
+            [StringLength(50, ErrorMessage = "LastName is to long (50 characters max)")]
             public string LastName { get; set; } = string.Empty;
-
+            [Required(ErrorMessage = "Adress is needed")]
+            [StringLength(100, ErrorMessage = "address is to long (100 characters max)")]
             public string Adress { get; set; } = string.Empty;
-
+            [Required(ErrorMessage = "City is needed")]
+            [StringLength(50, ErrorMessage = "City is to long (50 characters max)")]
             public string City { get; set; } = string.Empty;
-
+            [Required(ErrorMessage = "Country is needed")]
+            [StringLength(50, ErrorMessage = "Country is to long (50 characters max)")]
             public string Country { get; set; } = string.Empty;
-
+            [Required(ErrorMessage = "Street is needed")]
+            [StringLength(50, ErrorMessage = "Street is to long (50 characters max)")]
             public string Street {  get; set; } = string.Empty;
 
 

@@ -17,11 +17,14 @@ namespace Data.Repositories
         }
         public async Task<Bid?> CreateBidAsync(Bid bid)
         {
-            var higestbid = _dbContext.Bids.Include(x => x.Ad).Include(x => x.User).Where(x => x.AdID == bid.AdID).OrderByDescending(x => x.BidAmount).FirstOrDefault();
-            if(higestbid != null && bid.BidAmount <= higestbid.BidAmount)
-            {
-                return null;
-            }
+            var ads = await _dbContext.Ads.FindAsync(bid.AdID);
+
+            if (ads == null) return null;
+
+            var higestbid = await _dbContext.Bids.Include(x => x.Ad).Include(x => x.User).Where(x => x.AdID == bid.AdID).OrderByDescending(x => x.BidAmount).FirstOrDefaultAsync();
+            decimal priceToBEAT = higestbid != null ? higestbid.BidAmount : ads.StartingPrice;
+
+          if( bid.BidAmount <= priceToBEAT) return null;
           await _dbContext.Bids.AddAsync(bid);
             return bid;
         }
@@ -42,16 +45,23 @@ namespace Data.Repositories
          return await _dbContext.Bids.Include(x => x.Ad).Include(x =>x.User).FirstOrDefaultAsync( x => x.BidID == id );
         }
 
+        public async Task<IEnumerable<Bid>> GetBidsByAdIdAsync(int AdId)
+        {
+           return await _dbContext.Bids.Include(x => x.User).Where(x => x.AdID == AdId).OrderByDescending(x => x.BidDate).ToListAsync();
+        }
+
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateBid(Bid bid)
+        public async Task<Bid?> UpdateBid(Bid bid)
         {
-         
+            var highestbid = await _dbContext.Bids.Where(x => x.AdID == bid.AdID && x.BidID != bid.BidID).OrderByDescending(x => x.BidAmount).FirstOrDefaultAsync();
+            if (highestbid != null && bid.BidAmount <= highestbid.BidAmount) return null;
+
             _dbContext.Bids.Update(bid);
-           
+            return bid;
         }
     }
 }

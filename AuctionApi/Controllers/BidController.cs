@@ -30,6 +30,19 @@ namespace AuctionApi.Controllers
             }
         }
 
+        [HttpGet("ad/{adId:int}")]
+        public async Task<IActionResult> GetBidsByAdId(int adId)
+        {
+            try
+            {
+                var adbids = await _bidService.GetBidsbyAdId(adId);
+                return Ok(adbids);
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{bidId:int}")]
         public async Task<IActionResult> GetOneBid(int bidId)
         {

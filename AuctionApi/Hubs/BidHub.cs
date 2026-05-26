@@ -7,10 +7,10 @@ namespace AuctionApi.Hubs
     {
         public override async Task OnConnectedAsync()
         {
-            var clientId = Context.GetHttpContext()?.Request.Query["clientId"].ToString();
-            if (!string.IsNullOrWhiteSpace(clientId))
+            var adId = Context.GetHttpContext()?.Request.Query["adId"].ToString();
+            if (!string.IsNullOrWhiteSpace(adId))
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, $"clientId:{clientId}");
+                await Groups.AddToGroupAsync(Context.ConnectionId, $"adId:{adId}");
             }
             await base.OnConnectedAsync();
         }

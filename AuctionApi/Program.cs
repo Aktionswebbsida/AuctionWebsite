@@ -59,8 +59,13 @@ app.UseCors("AllowMainApp");
 app.UseAuthorization();
 app.MapPost("/bids", async (BidCreateDto bidCreateDto, IBidInterface bidservice) =>
 {
-    await bidservice.CreateBidAsync(bidCreateDto);
-   
+    var result = await bidservice.CreateBidAsync(bidCreateDto);
+
+    if(result == null)
+    {
+        return Results.BadRequest("Bid amount must be higher than the current highest bid or starting price.");
+    }
+
     return Results.Accepted();
 
 
@@ -68,8 +73,13 @@ app.MapPost("/bids", async (BidCreateDto bidCreateDto, IBidInterface bidservice)
 
 app.MapPut("/bids/{id}", async (int id, BidUpdateDto bidUpdateDto, IBidInterface bidservice) =>
 {
-    await bidservice.UpdateBid(id, bidUpdateDto);
-  
+    var result = await bidservice.UpdateBid(id, bidUpdateDto);
+
+    if(result == null)
+    {
+        return Results.BadRequest("Bid amount must be higher than the current highest bid or starting price.");
+    }
+
     return Results.Accepted();
 
 
