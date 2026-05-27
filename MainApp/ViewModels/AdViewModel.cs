@@ -21,7 +21,7 @@ namespace MainApp.ViewModels
         public string SellerName { get; set; } = string.Empty;
 
 
-
+        public int? WinnerId { get; set; }
 
         public ICollection<ImagesViewModel> Images { get; set; } = new List<ImagesViewModel>();
     }

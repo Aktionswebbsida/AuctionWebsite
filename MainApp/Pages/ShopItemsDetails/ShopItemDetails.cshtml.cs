@@ -27,11 +27,16 @@ namespace MainApp.Pages.ShopItemsDetails
         [BindProperty]
         public BidCreateViewModel AddBid { get; set; } = new BidCreateViewModel();
 
+        [BindProperty]
+        public WinnerViewModel Winner { get; set; } = new WinnerViewModel();
 
         [BindProperty(SupportsGet = true)]
         public int Id { get; set; }
+
+        public bool IsAuctionClosed { get; set; } = false;
         public async Task<IActionResult> OnGetAsync()
         {
+          
            
             var client = _HttpClientFactory.CreateClient("APIClient");
             var response = await client.GetAsync($"/api/Ad/{Id}");
@@ -70,8 +75,9 @@ namespace MainApp.Pages.ShopItemsDetails
 
 
             };
+            IsAuctionClosed = Ads.EndDate < DateTime.Now || Ads.WinnerId != null;
 
-          var bidsResponse = await client.GetAsync($"/api/Bid/ad/{Id}");
+            var bidsResponse = await client.GetAsync($"/api/Bid/ad/{Id}");
           if(bidsResponse.IsSuccessStatusCode)
           {
               var bids = await bidsResponse.Content.ReadFromJsonAsync<List<BidDto>>();

@@ -80,6 +80,20 @@ app.MapPost("/bids", async (BidCreateDto bidCreateDto, IBidInterface bidservice)
 
 });
 
+app.MapPost("/bids/Winner/{adid:int}", async ( int adid, IAdInterface adservice) =>
+{
+    var result = await adservice.AnnoceWinner(adid);
+
+    if (result == null)
+    {
+        return Results.NotFound("no winner.");
+    }
+
+    return Results.Ok(result);
+
+
+});
+
 app.MapPut("/bids/{id}", async (int id, BidUpdateDto bidUpdateDto, IBidInterface bidservice) =>
 {
     var result = await bidservice.UpdateBid(id, bidUpdateDto);

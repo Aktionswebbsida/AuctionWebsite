@@ -62,5 +62,30 @@ namespace Data.Repositories
         {
             return await _dbContext.Ads.Include(x => x.Seller).Include(x => x.Images).Where(x => x.SellerId == sellerId).Where(x => !x.IsDeleted).ToListAsync();
         }
+
+        public async Task<Ad?> AnnoceWinner(int adId)
+        {
+            var ad = await GetAdByIdAsync(adId);
+             if(ad != null)
+            {
+                if (DateTime.Now >= ad.EndDate)
+                {
+                    ad.IsClosed = true;
+                }
+
+                var winner = ad.Bids.Where(x => x.AdID == adId).OrderByDescending(x => x.BidAmount).FirstOrDefault();
+                 if(winner != null)
+                {
+                    ad.WinnerId = winner.UserId;
+                }
+
+            }
+           
+
+
+
+               
+            return null;
+        }
     }
 }

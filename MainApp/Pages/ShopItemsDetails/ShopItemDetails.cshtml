@@ -15,47 +15,74 @@
                         <h1 class="display-5 fw-bolder"> ItemName: @Model.Ads.Title</h1>
                         <div class="fs-5 mb-5">
                     <p class="lead"> SellerName: @Model.Ads.SellerName</p>
+                    <div class="text-danger fw-bold">
+                        ends at @Model.Ads.EndDate.ToString("yyyy-MM-dd HH:mm")
+                    </div>
                     <span> Price: <strong id="highestBid_@Model.Ads.AdID"> @Model.Ads.StartingPrice.ToString("C0") </strong> </span>
                         </div>
                         <p class="lead"> Description: @Model.Ads.Description</p>
                 <p class="lead"> Place: @Model.Ads.Place</p>
-                       <form id="bidForm" method="post" class="mt-4">
-                    <input type="hidden" asp-for="AddBid.AdID" value="@Model.Ads.AdID" class="form-control" />
+                @if (Model.IsAuctionClosed)
+                {
+                   <div class="alert alert-danger shadow-sm">
+                       auction slut
+                        @if (Model.Bids != null && Model.Bids.Any())
+                        {
+                            var winner = Model.Bids.OrderByDescending(b => b.BidAmount).First();
 
-                    <div class="d-flex">
+                            <div class="list-group-item bg-success text-white border-0 mb-1 rounded">
+                                <strong> Congrats @winner.UserName</strong>
+                            </div>
+                        }
+                        else
+                        {
+                         
+                                <p>waiting for first  bid</p>
+                            
+                        }
+                   </div> 
+                }
+                else
+                {
+                    <form id="bidForm" method="post" class="mt-4">
+                        <input type="hidden" asp-for="AddBid.AdID" value="@Model.Ads.AdID" class="form-control" />
 
-                        <input asp-for="AddBid.BidAmount" id="bidAmountInput" class="form-control text-center m-3" type="number" step="0.01" max="99999999" style="max-width: 8rem;" placeholder="e.g. Bid $" />
+                        <div class="d-flex">
 
-                        <button class="btn btn-dark flex-shrink-0" type="submit">
-                            <i class="bi-hammer me-1"></i>
-                            Place bid
-                        </button>
-                    </div>
-                    <div class="mt-4">
-                        <h5 class="text-white">
-                            recent activity
-                        </h5>
-                        <ul id="bidHistory" class="list-group list-group-flush">
-                            @if(Model.Bids != null && Model.Bids.Any())
-                            {
-                                foreach(var bid in Model.Bids.OrderByDescending(b => b.BidDate))
+                            <input asp-for="AddBid.BidAmount" id="bidAmountInput" class="form-control text-center m-3" type="number" step="0.01" max="99999999" style="max-width: 8rem;" placeholder="e.g. Bid $" />
+
+                            <button class="btn btn-dark flex-shrink-0" type="submit">
+                                <i class="bi-hammer me-1"></i>
+                                Place bid
+                            </button>
+                        </div>
+                        <div class="mt-4">
+                            <h5 class="text-white">
+                                recent activity
+                            </h5>
+                            <ul id="bidHistory" class="list-group list-group-flush">
+                                @if (Model.Bids != null && Model.Bids.Any())
                                 {
-                                    <li class="list-group-item bg-success text-white border-0 mb-1 rounded">
-                                        <strong>@bid.UserName</strong> just bidded <strong>$@bid.BidAmount.ToString("C0")</strong>
+                                    foreach (var bid in Model.Bids.OrderByDescending(b => b.BidDate))
+                                    {
+                                        <li class="list-group-item bg-success text-white border-0 mb-1 rounded">
+                                            <strong>@bid.UserName</strong> just bidded <strong>$@bid.BidAmount.ToString("C0")</strong>
+                                        </li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li id="noBidsMessage" class="list-group-item bg-primary text-white border-0">
+                                        waiting for first  bid
                                     </li>
                                 }
-                            }
-                            else
-                            {
-                                <li id="noBidsMessage" class="list-group-item bg-primary text-white border-0">
-                                    waiting for first  bid
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                    <div id="errorMessages" class="text-warning mt-2 fw-bold"></div>
+                            </ul>
+                        </div>
+                        <div id="errorMessages" class="text-warning mt-2 fw-bold"></div>
                         <div asp-validation-summary="All" class="text-warning mt-2 fw-bold"></div>
-                       </form>
+                    </form>
+                }
+                
                     </div>
                 </div>
             </div>

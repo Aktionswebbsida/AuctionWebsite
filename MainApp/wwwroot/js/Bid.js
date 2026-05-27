@@ -127,46 +127,80 @@ connection.on("UpdateHighestBid", function (adId, amount, UserName) {
     }
 });
 
+connection.on("YouWon", function (winner) {
+    const biddisplay = document.getElementById("highestBid_" + winner.adId);
+    if (biddisplay) {
+        biddisplay.innerText = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0
+        }).format(winner.bidAmount);
+
+        biddisplay.style.color = "#28a745"
+        const bidform = document.getElementById("bidForm")
+        if (bidform) {
+            const button = bidform.querySelector("button");
+            const input = bidform.querySelector("input");
+            if (button) {
+                button.disabled = true;
+                button.innerHTML = "Auction Closed"
+            }
+            if (input) {
+                input.disabled = true;
+            }
+        }
+        console.log("Winner", winner.userName)
+        setTimeout(() => {
+            biddisplay.style.color = "";
+        }, 3000)
+    }
+
+    
+});
+
+
 connection.start().then(() => console.log("SignalR connected")).catch(err => console.error(err.toString()));
 
+const bidform = document.getElementById("bidForm");
+if (bidform) {
+    bidform.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const errormessageDiv = document.getElementById("errorMessages");
+        const bidInput = document.getElementById("bidAmountInput");
 
-document.getElementById("bidForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const errormessageDiv = document.getElementById("errorMessages");
-    const bidInput = document.getElementById("bidAmountInput");
+        errormessageDiv.innerText = "";
 
-    errormessageDiv.innerText = "";
-
-    try {
-        const response = await fetch(window.location.href, {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "RequestVerificationToken": document.querySelector('input[name = "__RequestVerificationToken"]').value
-            }
+        try {
+            const response = await fetch(window.location.href, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "RequestVerificationToken": document.querySelector('input[name = "__RequestVerificationToken"]').value
+                }
 
 
-        });
+            });
 
-        if (response.ok) {
-            bidInput.value = "";
-            errormessageDiv.innerText = "";
-        }
-        else {
-            const ErrorText = await response.text();
-            console.log("Server error content", ErrorText);
-
-            if (ErrorText.includes("<!DOCTYPE html>")) {
-                errormessageDiv.innerText = "Bid Failed";
+            if (response.ok) {
+                bidInput.value = "";
+                errormessageDiv.innerText = "";
             }
             else {
-                errormessageDiv.innerText = ErrorText || "Bid was too low";
+                const ErrorText = await response.text();
+                console.log("Server error content", ErrorText);
+
+                if (ErrorText.includes("<!DOCTYPE html>")) {
+                    errormessageDiv.innerText = "Bid Failed";
+                }
+                else {
+                    errormessageDiv.innerText = ErrorText || "Bid was too low";
+                }
             }
+        } catch (err) {
+            errormessageDiv.innerText = "Connection Failed";
+            console.error("Fetch error", err)
         }
-    } catch (err) {
-        errormessageDiv.innerText = "Connection Failed";
-        console.error("Fetch error", err)
-    }
-});
+    });
+}

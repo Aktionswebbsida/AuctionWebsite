@@ -2,8 +2,10 @@
 using Data.DTOs;
 using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Business.Services
@@ -11,10 +13,44 @@ namespace Business.Services
     public class AdService : IAdInterface
     { 
         private readonly IAdRepository _addRepository;
+        public readonly IHubContext _HubContext;
 
-        public AdService(IAdRepository addRepository)
+        public AdService(IAdRepository addRepository , IHubContext hubContext)
         {
             _addRepository = addRepository;
+            _HubContext = hubContext;
+        }
+
+        public async Task<WinnerDTO?> AnnoceWinner(int adId)
+        {
+            try
+            {
+                var winner = await _addRepository.AnnoceWinner(adId);
+                 if(winner == null) return null;
+
+                 var highestbid = winner.Bids.OrderByDescending(x => x.BidAmount).FirstOrDefault();
+                if(highestbid == null) return null;
+                var mappp = new WinnerDTO
+                {
+                    AdID = winner.AdID,
+                    BidAmount = highestbid.BidAmount,
+                    BidDate = highestbid.BidDate,
+                    UserId = highestbid.UserId,
+                    EndDate = winner.EndDate,
+                    UserName    = (highestbid.User != null) ? (!string.IsNullOrWhiteSpace(highestbid.User.FirstName) ? $"{highestbid.User.FirstName} {highestbid.User.LastName}" : highestbid.User.UserName) : "Unknown bidde"
+                };
+
+
+                await _HubContext.Clients.Group($"adId:{mappp.AdID}").SendAsync("YouWon", mappp);
+                return mappp;
+
+                
+
+            }catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while annoncing the winner: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<AdCreateDto> CreateAdAsync(AdCreateDto adDto)

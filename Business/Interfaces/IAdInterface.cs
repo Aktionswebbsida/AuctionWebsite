@@ -18,6 +18,8 @@ namespace Business.Interfaces
 
         Task DeleteAdAsync(int id);
 
+        Task<WinnerDTO?> AnnoceWinner(int adId);
+
 
     }
 }
