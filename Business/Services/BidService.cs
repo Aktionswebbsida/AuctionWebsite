@@ -38,10 +38,15 @@ namespace Business.Services
                 {
                     return null;
                 }
-
                 await _IBidRepository.SaveChangesAsync();
+                var bidcreate = await _IBidRepository.GetBidAsync(result.BidID);
 
-                await _HubContext.Clients.Group($"adId:{bid.AdID}").SendAsync("UpdateHighestBid", bid.AdID, bid.BidAmount, bid.UserId);
+                var nametotakein  =  (bidcreate?.User != null) ? (!string.IsNullOrWhiteSpace(bidcreate.User.FirstName) ? $"{bidcreate.User.FirstName} {bidcreate.User.LastName}" : bidcreate.User.UserName) : "Unknown bidder";
+
+
+
+
+                await _HubContext.Clients.Group($"adId:{bid.AdID}").SendAsync("UpdateHighestBid", bid.AdID, bid.BidAmount, nametotakein);
 
                 return bid;
             }
@@ -84,6 +89,7 @@ namespace Business.Services
                     BidDate = x.BidDate,
                     UserId = x.UserId,
                     AdID = x.AdID,
+                    UserName = (x.User != null) ? (!string.IsNullOrWhiteSpace(x.User.FirstName) ? $"{x.User.FirstName} {x.User.LastName}" : x.User.UserName) : "Unknown bidder"
 
 
                 });
@@ -113,6 +119,7 @@ namespace Business.Services
                         BidDate = bidId.BidDate,
                         UserId = bidId.UserId,
                         AdID = bidId.AdID,
+                        UserName = (bidId.User != null) ? (!string.IsNullOrWhiteSpace(bidId.User.FirstName) ? $"{bidId.User.FirstName} {bidId.User.LastName}" : bidId.User.UserName) : "Unknown bidder"
                     };
                 }
                 return null;
@@ -138,10 +145,13 @@ namespace Business.Services
                     BidID = x.BidID,
                     BidAmount = x.BidAmount,
                     BidDate = x.BidDate,
-                    UserId=x.UserId, 
+                    UserId = x.UserId,
                     AdID = x.AdID,
+                    UserName = (x.User != null ) ? (!string.IsNullOrWhiteSpace(x.User.FirstName) ? $"{x.User.FirstName} {x.User.LastName}" : x.User.UserName) : "Unknown bidder"
+
                 }).ToList();
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while retrieving ad bids: {ex.Message}");
                 throw;
@@ -153,19 +163,23 @@ namespace Business.Services
             try
             {
                 var bidToUpdate = await _IBidRepository.GetBidAsync(id);
-                 if(bidToUpdate == null)  return null;
+                if (bidToUpdate == null) return null;
 
 
                 bidToUpdate.BidAmount = bid.BidAmount;
-                    bidToUpdate.BidDate = bid.BidDate;
-                    bidToUpdate.UserId = bid.UserId;
-                    bidToUpdate.AdID = bid.AdID;
+                bidToUpdate.BidDate = bid.BidDate;
+                bidToUpdate.UserId = bid.UserId;
+                bidToUpdate.AdID = bid.AdID;
 
-                   var result = await _IBidRepository.UpdateBid(bidToUpdate);
-                if(result == null) return null;
-                    await _IBidRepository.SaveChangesAsync();
-                
-                await _HubContext.Clients.Group($"adId:{bid.AdID}").SendAsync("UpdateHighestBid", bid.AdID, bid.BidAmount, bid.UserId);
+                var result = await _IBidRepository.UpdateBid(bidToUpdate);
+                if (result == null) return null;
+                await _IBidRepository.SaveChangesAsync();
+
+                var bidcreate = await _IBidRepository.GetBidAsync(result.BidID);
+
+                var nametotakein = (bidcreate?.User != null) ? (!string.IsNullOrWhiteSpace(bidcreate.User.FirstName) ? $"{bidcreate.User.FirstName} {bidcreate.User.LastName}" : bidcreate.User.UserName) : "Unknown bidder";
+
+                await _HubContext.Clients.Group($"adId:{bid.AdID}").SendAsync("UpdateHighestBid", bid.AdID, bid.BidAmount, nametotakein);
                 return bid;
             }
             catch (Exception ex)

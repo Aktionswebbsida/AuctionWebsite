@@ -90,7 +90,9 @@ namespace MainApp.Pages.ShopItemsDetails
                       BidAmount = b.BidAmount,
                       BidDate = b.BidDate,
                       UserId = b.UserId,
-                      AdID = b.AdID
+                      AdID = b.AdID,
+                      UserName = b.UserName,
+                      
                   }).ToList();
               }
           }

@@ -5,6 +5,7 @@ using Data.DbContext;
 using Data.DTOs;
 using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,10 +36,18 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContexts>(options =>
     options.UseSqlServer(connectionString));
 
+// Use AddIdentity instead of AddDefaultIdentity to ensure the extension is available
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole<int>>()
+    .AddEntityFrameworkStores<ApplicationDbContexts>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddScoped<IAdRepository, AdRepository>();
 builder.Services.AddScoped<IAdInterface, AdService>();
 builder.Services.AddScoped<IBidRepository, BidRepository>();
 builder.Services.AddScoped<IBidInterface, BidService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserInterface, UserService>();
 
 var app = builder.Build();
 
@@ -61,7 +70,7 @@ app.MapPost("/bids", async (BidCreateDto bidCreateDto, IBidInterface bidservice)
 {
     var result = await bidservice.CreateBidAsync(bidCreateDto);
 
-    if(result == null)
+    if (result == null)
     {
         return Results.BadRequest("Bid amount must be higher than the current highest bid or starting price.");
     }
@@ -75,7 +84,7 @@ app.MapPut("/bids/{id}", async (int id, BidUpdateDto bidUpdateDto, IBidInterface
 {
     var result = await bidservice.UpdateBid(id, bidUpdateDto);
 
-    if(result == null)
+    if (result == null)
     {
         return Results.BadRequest("Bid amount must be higher than the current highest bid or starting price.");
     }

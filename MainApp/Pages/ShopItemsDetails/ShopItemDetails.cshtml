@@ -41,7 +41,7 @@
                                 foreach(var bid in Model.Bids.OrderByDescending(b => b.BidDate))
                                 {
                                     <li class="list-group-item bg-success text-white border-0 mb-1 rounded">
-                                        <strong>@bid.UserId</strong> just bidded <strong>$@bid.BidAmount.ToString("C0")</strong>
+                                        <strong>@bid.UserName</strong> just bidded <strong>$@bid.BidAmount.ToString("C0")</strong>
                                     </li>
                                 }
                             }
