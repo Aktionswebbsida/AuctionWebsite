@@ -6,6 +6,7 @@ using Data.DTOs;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -80,7 +81,7 @@ app.MapPost("/bids", async (BidCreateDto bidCreateDto, IBidInterface bidservice)
 
 });
 
-app.MapPost("/bids/Winner/{adid:int}", async ( int adid, IAdInterface adservice) =>
+app.MapPost("/bids/winner/{adid:int}", async ( int adid, IAdInterface adservice) =>
 {
     var result = await adservice.AnnoceWinner(adid);
 

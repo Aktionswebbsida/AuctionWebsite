@@ -22,28 +22,34 @@
                         </div>
                         <p class="lead"> Description: @Model.Ads.Description</p>
                 <p class="lead"> Place: @Model.Ads.Place</p>
+             
                 @if (Model.IsAuctionClosed)
                 {
-                   <div class="alert alert-danger shadow-sm">
-                       auction slut
-                        @if (Model.Bids != null && Model.Bids.Any())
-                        {
-                            var winner = Model.Bids.OrderByDescending(b => b.BidAmount).First();
-
-                            <div class="list-group-item bg-success text-white border-0 mb-1 rounded">
-                                <strong> Congrats @winner.UserName</strong>
-                            </div>
-                        }
-                        else
-                        {
-                         
-                                <p>waiting for first  bid</p>
+                    <div id="auctionStatus">
+                        <div class="alert alert-danger shadow-sm">
+                            auction slut
+                            @if (Model.Bids != null && Model.Bids.Any())
+                            {
+                                var winner = Model.Bids.OrderByDescending(b => b.BidAmount).First();
                             
-                        }
-                   </div> 
+                                <div id="winnerDisplay" class="list-group-item bg-success text-white border-0 mb-1 rounded">
+                                    <strong> Congrats @winner.UserName</strong>
+                                </div>
+
+                            
+                            }
+                       
+                        </div>
+                    </div>
                 }
                 else
                 {
+                    <div id="bidContainer">
+                        <div class="mb-3 text-center">
+                            <h4 class="text-white"> Time left <span id="timeDisplay" class="badge bg-warning text-dark">Calculating</span></h4>
+                        </div>
+                    </div>
+               
                     <form id="bidForm" method="post" class="mt-4">
                         <input type="hidden" asp-for="AddBid.AdID" value="@Model.Ads.AdID" class="form-control" />
 
@@ -82,7 +88,9 @@
                         <div asp-validation-summary="All" class="text-warning mt-2 fw-bold"></div>
                     </form>
                 }
-                
+
+                   
+               
                     </div>
                 </div>
             </div>
@@ -199,9 +207,64 @@
         const currentAdId = "@Model.Ads.AdID";
     </script>
     <script src="~/js/Bid.js"></script>
-    
+    @* <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-   
+            const isClosed = @Model.IsAuctionClosed.ToString().ToLower();
+
+            console.log("Auktion stängd enligt server:", isClosed);
+
+            if (isClosed) {
+                console.log("Auktion stängd, hoppar över nedräkning.");
+
+                const display = document.getElementById("timeDisplay");
+
+                if (display) {
+                    display.innerText = "0s";
+                }
+
+                return;
+            }
+
+            // VIKTIGT: ingen Z här
+            const endDate = new Date("@Model.Ads.EndDate.ToString("yyyy-MM-ddTHH:mm:ss")");
+
+            const now = new Date();
+
+            const secondsLeft = Math.floor((endDate.getTime() - now.getTime()) / 1000);
+
+            console.log("EndDate:", endDate);
+            console.log("Now:", now);
+            console.log("Seconds left:", secondsLeft);
+
+            if (secondsLeft > 0 && typeof StartCountDown === "function") {
+
+                StartCountDown(secondsLeft);
+
+            } else {
+
+                const display = document.getElementById("timeDisplay");
+
+                if (display) {
+                    display.innerText = "0s";
+                }
+
+                console.log("Auktion redan slut enligt klient.");
+            }
+        });
+    </script> *@
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function (){
+    if (@Model.IsAuctionClosed.ToString().ToLower())  return;
+          const enddate = new Date("@Model.Ads.EndDate.ToString("yyyy-MM-ddTHH:mm:ss")");
+          const secondsleft = Math.floor((enddate - new Date())/1000);
+
+          if(secondsleft > 0){
+              StartCountDown(secondsleft);
+          }
+        })
+    </script>
     }
 
 <!-- Related items section-->

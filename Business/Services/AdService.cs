@@ -28,8 +28,16 @@ namespace Business.Services
                 var winner = await _addRepository.AnnoceWinner(adId);
                  if(winner == null) return null;
 
-                 var highestbid = winner.Bids.OrderByDescending(x => x.BidAmount).FirstOrDefault();
+                if (winner.Bids == null || !winner.Bids.Any() )
+                {
+                    return null;
+                }
+                
+
+                var highestbid = winner.Bids.OrderByDescending(x => x.BidAmount).FirstOrDefault();
                 if(highestbid == null) return null;
+                await _addRepository.SaveChangesAsync();
+
                 var mappp = new WinnerDTO
                 {
                     AdID = winner.AdID,

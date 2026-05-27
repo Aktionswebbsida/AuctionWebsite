@@ -60,6 +60,8 @@ namespace MainApp.Pages.ShopItemsDetails
                 StartingPrice = ads.StartingPrice,
                 StartDate = ads.StartDate,
                 EndDate = ads.EndDate,
+                IsClosed = ads.IsClosed,
+                WinnerId = ads.WinnerId,
                 SellerId = ads.SellerId,
                 SellerName = ads.SellerName,
                 Images = ads.Images.Select(img => new ImagesViewModel
@@ -75,7 +77,7 @@ namespace MainApp.Pages.ShopItemsDetails
 
 
             };
-            IsAuctionClosed = Ads.EndDate < DateTime.Now || Ads.WinnerId != null;
+            IsAuctionClosed = Ads.IsClosed || DateTime.Now >= Ads.EndDate;
 
             var bidsResponse = await client.GetAsync($"/api/Bid/ad/{Id}");
           if(bidsResponse.IsSuccessStatusCode)
@@ -126,6 +128,13 @@ namespace MainApp.Pages.ShopItemsDetails
             Id = AddBid.AdID;
 
             await OnGetAsync();
+            if(IsAuctionClosed)
+            {
+                var errormessage = "Auction is closed";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest") return new BadRequestObjectResult(errormessage);
+                ModelState.AddModelError(string.Empty, errormessage);
+                return Page();
+            }
             if(AddBid.BidAmount > (Ads.StartingPrice * 100))
             {
                 var errormessage = "100 times at a time try again";
@@ -161,5 +170,8 @@ namespace MainApp.Pages.ShopItemsDetails
             return Page();
 
         }
+
+        
+       
     }
 }

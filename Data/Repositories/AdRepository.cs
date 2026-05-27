@@ -68,16 +68,18 @@ namespace Data.Repositories
             var ad = await GetAdByIdAsync(adId);
              if(ad != null)
             {
-                if (DateTime.Now >= ad.EndDate)
-                {
-                    ad.IsClosed = true;
-                }
-
+                if (DateTime.Now < ad.EndDate)
+                    return ad;
+                
+                ad.IsClosed = true;
+               
                 var winner = ad.Bids.Where(x => x.AdID == adId).OrderByDescending(x => x.BidAmount).FirstOrDefault();
                  if(winner != null)
                 {
                     ad.WinnerId = winner.UserId;
                 }
+
+                 return ad;
 
             }
            

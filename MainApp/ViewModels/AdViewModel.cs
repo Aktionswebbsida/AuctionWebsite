@@ -23,6 +23,8 @@ namespace MainApp.ViewModels
 
         public int? WinnerId { get; set; }
 
+        public bool IsClosed { get; set; }
+
         public ICollection<ImagesViewModel> Images { get; set; } = new List<ImagesViewModel>();
     }
 }

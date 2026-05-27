@@ -19,6 +19,10 @@ namespace Data.DTOs
 
         public DateTime EndDate { get; set; }
 
+        public bool IsClosed { get; set; }
+
+        public int WinnerId { get; set; }
+
         public int SellerId { get; set; }
 
         public string SellerName { get; set; } = string.Empty;

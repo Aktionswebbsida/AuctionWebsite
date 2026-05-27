@@ -127,7 +127,118 @@ connection.on("UpdateHighestBid", function (adId, amount, UserName) {
     }
 });
 
+let auctionTimer;
+let winnerProcess;
+
+function CleanUi() {
+    const bidform = document.getElementById("bidForm")
+    if (bidform) {
+        const button = bidform.querySelector("button");
+        const input = bidform.querySelector("input");
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = "Auction Closed"
+        }
+        if (input) {
+            input.disabled = true;
+        }
+    }
+}
+function StartCountDown(seconds) {
+    if (auctionTimer) {
+        clearInterval(auctionTimer);
+    }
+    auctionTimer = setInterval( function () {
+      
+        const display = document.getElementById("timeDisplay");
+        if (display) {
+            display.innerHTML = seconds + "s"
+        }
+          
+            
+
+            if (seconds <= 0) {
+                clearInterval(auctionTimer);
+                if (display) display.innerHTML = "0s"
+                if (!winnerProcess) {
+                    
+                    winnerProcess = true;
+                    triggerwinning(currentAdId);
+                }
+              
+              
+               
+           
+        }
+        if (seconds > 0) {
+            seconds--;
+        }
+    }, 1000);
+}
+
+
+//async function triggerwinning(adid) {
+//    winnerProcess = true;
+//    try {
+//        // Anropa din AuctionApi direkt på port 7284
+//        const response = await fetch(`https://localhost:7284/bids/winner/${adid}`, {
+//            method: "POST",
+//            headers: {
+//                "X-Requested-With": "XMLHttpRequest",
+//                "Content-Type": "application/json"
+//            }
+//        });
+
+//        if (response.ok) {
+
+//            console.log("Success: Vinnare korad!");
+
+
+//        } else {
+//            const errorText = await response.text();
+//            console.error("API Error (Status " + response.status + "):", errorText);
+//        }
+//    } catch (err) {
+//        winnerProcess = false;
+//        console.error("Connection error:", err);
+//    }
+//}
+
+async function triggerwinning(adid) {
+    winnerProcess = true;
+    try {
+        const response = await fetch(`https://localhost:7284/bids/winner/${adid}`, {
+            method: "POST",
+          
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type":"application/json"
+                
+            }
+
+
+        });
+
+        if (response.ok) {
+            console.log("Winner");
+        }
+        else {
+            const ErrorText = await response.text();
+            console.log("Server error content", ErrorText);
+
+           
+        }
+    } catch (err) {
+        winnerProcess = false;
+       
+        console.error("Fetch error");
+    }
+}
 connection.on("YouWon", function (winner) {
+
+    if (auctionTimer) clearInterval(auctionTimer);
+    winnerProcess = true;
+    CleanUi();
     const biddisplay = document.getElementById("highestBid_" + winner.adId);
     if (biddisplay) {
         biddisplay.innerText = new Intl.NumberFormat('en-US', {
@@ -137,24 +248,65 @@ connection.on("YouWon", function (winner) {
         }).format(winner.bidAmount);
 
         biddisplay.style.color = "#28a745"
-        const bidform = document.getElementById("bidForm")
-        if (bidform) {
-            const button = bidform.querySelector("button");
-            const input = bidform.querySelector("input");
-            if (button) {
-                button.disabled = true;
-                button.innerHTML = "Auction Closed"
-            }
-            if (input) {
-                input.disabled = true;
-            }
-        }
-        console.log("Winner", winner.userName)
+       
+        
+
+        
+
+     
         setTimeout(() => {
             biddisplay.style.color = "";
         }, 3000)
     }
+    const TimeDisplay = document.getElementById("timeDisplay");
+    if (TimeDisplay) TimeDisplay.innerHTML = "00:00:00";
+    //let auctionStatus = document.getElementById("auctionStatus");
 
+    //if (!auctionStatus) {
+
+    //    const bidContainer = document.getElementById("bidContainer");
+
+    //    auctionStatus = document.createElement("div");
+    //    auctionStatus.id = "auctionStatus";
+
+    //    auctionStatus.innerHTML = `
+    //        <div class="alert alert-danger shadow-sm mt-3">
+    //            auction slut
+    //            <div id="winnerDisplay"
+    //                 class="list-group-item bg-success text-white border-0 mb-1 rounded mt-2">
+    //                <strong>Congrats ${winner.userName}</strong>
+    //            </div>
+    //        </div>
+    //    `;
+
+    //    if (bidContainer) {
+    //        bidContainer.replaceWith(auctionStatus);
+    //    }
+    //}
+
+    let auctionStatus = document.getElementById("auctionStatus");
+
+    if (!auctionStatus) {
+        const bidContainer = document.getElementById("bidContainer");
+
+        auctionStatus = document.createElement("div");
+        auctionStatus.id = "auctionStatus";
+
+        auctionStatus.innerHTML = `<div class="alert alert-danger shadow-sm mt-2">
+        auction slut 
+          <div id="winnerDisplay" class="list-group-item bg-success text-white border-0 mb-1 rounded mt-2">
+                                    <strong> Congrats ${winner.userName}</strong>
+                                </div>
+                                </div>
+                                `
+                               
+
+        if (bidContainer) {
+            bidContainer.replaceWith(auctionStatus);
+        }
+
+    }
+    console.log("Winner", winner.userName)
     
 });
 
