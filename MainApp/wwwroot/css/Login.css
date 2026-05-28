@@ -1,0 +1,25 @@
+﻿﻿html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+.card-img-right {
+    height: 100vh;
+    /* Link to your background image using in the property below! */
+    background: url('/Auction.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+.back {
+    color: #8CA6FF;
+}
+
+#login-submit {
+    background-color: #3F6E2F;
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
+    padding: 0.5rem 1rem;
+}

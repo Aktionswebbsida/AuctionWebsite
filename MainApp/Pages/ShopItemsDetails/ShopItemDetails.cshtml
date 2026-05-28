@@ -1,0 +1,278 @@
+﻿@page
+@model MainApp.Pages.ShopItemsDetails.ShopItemDetailsModel
+@{
+    Layout = "~/Pages/Shared/ShopItem.cshtml";
+}
+
+
+  
+    
+        <section class="py-5 bg-primary">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 ">
+                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="@Model.Ads.Images.FirstOrDefault()?.Url" alt="..." /></div>
+                    <div class="col-md-6">
+                        <h1 class="display-5 fw-bolder"> ItemName: @Model.Ads.Title</h1>
+                        <div class="fs-5 mb-5">
+                    <p class="lead"> SellerName: @Model.Ads.SellerName</p>
+                    <div class="text-danger fw-bold">
+                        ends at @Model.Ads.EndDate.ToString("yyyy-MM-dd HH:mm")
+                    </div>
+                    <span> Price: <strong id="highestBid_@Model.Ads.AdID"> @Model.Ads.StartingPrice.ToString("C0") </strong> </span>
+                        </div>
+                        <p class="lead"> Description: @Model.Ads.Description</p>
+                <p class="lead"> Place: @Model.Ads.Place</p>
+             
+                @if (Model.IsAuctionClosed)
+                {
+                    <div id="auctionStatus">
+                        <div class="alert alert-danger shadow-sm">
+                            auction slut
+                            @if (Model.Bids != null && Model.Bids.Any())
+                            {
+                                var winner = Model.Bids.OrderByDescending(b => b.BidAmount).First();
+                            
+                                <div id="winnerDisplay" class="list-group-item bg-success text-white border-0 mb-1 rounded">
+                                    <strong> Congrats @winner.UserName</strong>
+                                </div>
+
+                            
+                            }
+                       
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div id="bidContainer">
+                        <div class="mb-3 text-center">
+                            <h4 class="text-white"> Time left <span id="timeDisplay" class="badge bg-warning text-dark">Calculating</span></h4>
+                        </div>
+                    </div>
+               
+                    <form id="bidForm" method="post" class="mt-4">
+                        <input type="hidden" asp-for="AddBid.AdID" value="@Model.Ads.AdID" class="form-control" />
+
+                        <div class="d-flex">
+
+                            <input asp-for="AddBid.BidAmount" id="bidAmountInput" class="form-control text-center m-3" type="number" step="0.01" max="99999999" style="max-width: 8rem;" placeholder="e.g. Bid $" />
+
+                            <button class="btn btn-dark flex-shrink-0" type="submit">
+                                <i class="bi-hammer me-1"></i>
+                                Place bid
+                            </button>
+                            
+                        </div>
+                        
+                        <button id="buyNowBtn" data-userid="@Model.currentId" class="btn btn-dark flex-shrink-0" type="button">
+                            <i class="bi-hammer me-1"></i>
+                            buy now
+                        </button>
+                        <div class="mt-4">
+                            <h5 class="text-white">
+                                recent activity
+                            </h5>
+                            <ul id="bidHistory" class="list-group list-group-flush">
+                                @if (Model.Bids != null && Model.Bids.Any())
+                                {
+                                    foreach (var bid in Model.Bids.OrderByDescending(b => b.BidDate))
+                                    {
+                                        <li class="list-group-item bg-success text-white border-0 mb-1 rounded">
+                                            <strong>@bid.UserName</strong> just bidded <strong>$@bid.BidAmount.ToString("C0")</strong>
+                                        </li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li id="noBidsMessage" class="list-group-item bg-primary text-white border-0">
+                                        waiting for first  bid
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div id="errorMessages" class="text-warning mt-2 fw-bold"></div>
+                        <div asp-validation-summary="All" class="text-warning mt-2 fw-bold"></div>
+                    </form>
+                }
+
+                   
+               
+                    </div>
+                </div>
+            </div>
+        </section>
+<section class="py-5 bg-dark">
+    <div class="container px-4 px-lg-5 mt-5">
+        <h2 class="fw-bolder mb-4">Related products</h2>
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <div class="col mb-5">
+                <div class="card h-100">
+                    <!-- Product image-->
+                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name-->
+                            <h5 class="fw-bolder">Fancy Product</h5>
+                            <!-- Product price-->
+                            $40.00 - $80.00
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-5">
+                <div class="card h-100">
+                    <!-- Sale badge-->
+                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                    <!-- Product image-->
+                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name-->
+                            <h5 class="fw-bolder">Special Item</h5>
+                            <!-- Product reviews-->
+                            <div class="d-flex justify-content-center small text-warning mb-2">
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                            </div>
+                            <!-- Product price-->
+                            <span class="text-muted text-decoration-line-through">$20.00</span>
+                            $18.00
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-5">
+                <div class="card h-100">
+                    <!-- Sale badge-->
+                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                    <!-- Product image-->
+                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name-->
+                            <h5 class="fw-bolder">Sale Item</h5>
+                            <!-- Product price-->
+                            <span class="text-muted text-decoration-line-through">$50.00</span>
+                            $25.00
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-5">
+                <div class="card h-100">
+                    <!-- Product image-->
+                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name-->
+                            <h5 class="fw-bolder">Popular Item</h5>
+                            <!-- Product reviews-->
+                            <div class="d-flex justify-content-center small text-warning mb-2">
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                            </div>
+                            <!-- Product price-->
+                            $40.00
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    @section Scripts{
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script>
+        const currentAdId = "@Model.Ads.AdID";
+    </script>
+    <script src="~/js/Bid.js"></script>
+    @* <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const isClosed = @Model.IsAuctionClosed.ToString().ToLower();
+
+            console.log("Auktion stängd enligt server:", isClosed);
+
+            if (isClosed) {
+                console.log("Auktion stängd, hoppar över nedräkning.");
+
+                const display = document.getElementById("timeDisplay");
+
+                if (display) {
+                    display.innerText = "0s";
+                }
+
+                return;
+            }
+
+            // VIKTIGT: ingen Z här
+            const endDate = new Date("@Model.Ads.EndDate.ToString("yyyy-MM-ddTHH:mm:ss")");
+
+            const now = new Date();
+
+            const secondsLeft = Math.floor((endDate.getTime() - now.getTime()) / 1000);
+
+            console.log("EndDate:", endDate);
+            console.log("Now:", now);
+            console.log("Seconds left:", secondsLeft);
+
+            if (secondsLeft > 0 && typeof StartCountDown === "function") {
+
+                StartCountDown(secondsLeft);
+
+            } else {
+
+                const display = document.getElementById("timeDisplay");
+
+                if (display) {
+                    display.innerText = "0s";
+                }
+
+                console.log("Auktion redan slut enligt klient.");
+            }
+        });
+    </script> *@
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function (){
+    if (@Model.IsAuctionClosed.ToString().ToLower())  return;
+          const enddate = new Date("@Model.Ads.EndDate.ToString("yyyy-MM-ddTHH:mm:ss")");
+          const secondsleft = Math.floor((enddate - new Date())/1000);
+
+          if(secondsleft > 0){
+              StartCountDown(secondsleft);
+          }
+        })
+
+
+    </script>
+    }
+
+<!-- Related items section-->

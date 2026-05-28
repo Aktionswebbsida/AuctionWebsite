@@ -1,0 +1,74 @@
+﻿@page
+@model MainApp.Pages.Seller.AdCreateModel
+@{
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+<section class="py-5 bg-dark">
+<div class="container mt-5">
+    <div class=" row justify-content-center ">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Create New Ad</h3>
+                </div>
+                <div class="card-body">
+       
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group mb-3">
+                            <label asp-for="NewAd.Title" class="form-label">Title</label>
+                            <input asp-for="NewAd.Title" class="form-control" placeholder="e.g. Iphone 101" />
+                            <span asp-validation-for="NewAd.Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="NewAd.Description" class="form-label">Description</label>
+                            <input asp-for="NewAd.Description" class="form-control"  />
+                            <span asp-validation-for="NewAd.Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="NewAd.Place" class="form-label">Place </label>
+                            <input asp-for="NewAd.Place" class="form-control" placeholder="e.g. Stockholm" />
+                            <span asp-validation-for="NewAd.Place" class="text-danger"></span>
+                        </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="NewAd.StartingPrice" class="form-label">Starting Price</label>
+                                <input asp-for="NewAd.StartingPrice" class="form-control" type="number" />
+                                <span asp-validation-for="NewAd.StartingPrice" class="text-danger"></span>
+                            </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="NewImages[0].Url" class="form-label">Url</label>
+                            <input asp-for="NewImages[0].Url" class="form-control" placeholder="e.g. IPhone jpeg" />
+                            <span asp-validation-for="NewImages[0].Url" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="NewImages[0].Description" class="form-label">Image Description</label>
+                            <input asp-for="NewImages[0].Description" class="form-control" />
+                            <span asp-validation-for="NewImages[0].Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="NewAd.StartDate" class="form-label">Start Date</label>
+                            <input asp-for="NewAd.StartDate" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+                            <span asp-validation-for="NewAd.StartDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="NewAd.EndDate" class="form-label">End Date</label>
+                            <input asp-for="NewAd.EndDate" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+                            <span asp-validation-for="NewAd.EndDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                   
+                            <input type="hidden" asp-for="NewAd.SellerId" class="form-control" />
+                            <span asp-validation-for="NewAd.SellerId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">Create Ad</button>
+                            <a asp-page="/Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
