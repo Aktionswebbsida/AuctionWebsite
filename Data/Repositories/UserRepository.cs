@@ -18,6 +18,20 @@ namespace Data.Repositories
             _dbContext = dbContext;
             _userManager = userManager;
         }
+
+        public async Task<User> CreateAsync(User user)
+        {
+          var result = await _userManager.CreateAsync(user);
+            if(result.Succeeded)
+            {
+                return user;
+            }
+            else
+            {
+                throw new Exception("Couldnt create user");
+            }
+        }
+
         public async Task<IEnumerable<User>> GetAllCustomersAsync()
         { 
             var Customer = await _userManager.GetUsersInRoleAsync("Customer");
@@ -33,6 +47,11 @@ namespace Data.Repositories
         public async Task<User?> GetUserByIdAsync(int id)
         {
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

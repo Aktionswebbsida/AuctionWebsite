@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="AuctionApi/AuctionApi.csproj" Id="5596da74-8ae1-4fa7-ae0f-dcf3ffd7c028" />
+  <Project Path="AuctionTests/AuctionTests.csproj" Id="5bf6b348-583b-47dc-827e-ba8d59366d2c" />
   <Project Path="Business/Business.csproj" Id="3f5cc89c-68d5-4d78-8874-500ced2f04fb" />
   <Project Path="Data/Data.csproj" Id="d839241f-2126-4f26-b80c-555484b60e38" />
   <Project Path="MainApp/MainApp.csproj" Id="59dfe519-307d-484c-a8f1-2be8f0206d75" />
