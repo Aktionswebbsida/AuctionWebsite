@@ -143,6 +143,12 @@ function CleanUi() {
             input.disabled = true;
         }
     }
+
+    const buynow = document.getElementById("buyNowBtn");
+    if (buynow) {
+        buynow.disabled = true;
+        buynow.innerHTML = "sold";
+    }
 }
 function StartCountDown(seconds) {
     if (auctionTimer) {
