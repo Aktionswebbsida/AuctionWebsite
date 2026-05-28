@@ -11,5 +11,7 @@ namespace Business.Interfaces
         public Task UpdateHighestBid(int AdId, decimal amount);
 
         public Task YouWon (WinnerDTO Winner );
+
+        public Task BuyNow(BuyNowDTO Winner);
     }
 }

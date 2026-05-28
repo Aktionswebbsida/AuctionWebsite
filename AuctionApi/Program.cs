@@ -80,7 +80,19 @@ app.MapPost("/bids", async (BidCreateDto bidCreateDto, IBidInterface bidservice)
 
 
 });
+app.MapPost("/bids/buynow/{adid:int}/userid/{userid:int}", async (int userid, int adid, IAdInterface adservice) =>
+{
+    var result = await adservice.BuyNow(adid, userid);
 
+    if (result == null)
+    {
+        return Results.BadRequest("error buying now...");
+    }
+
+    return Results.Ok(result);
+
+
+});
 app.MapPost("/bids/winner/{adid:int}", async ( int adid, IAdInterface adservice) =>
 {
     var result = await adservice.AnnoceWinner(adid);

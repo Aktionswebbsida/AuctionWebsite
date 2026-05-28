@@ -25,6 +25,8 @@ namespace Data.Entities
         public int? WinnerId { get; set; }
 
        public User? Winner { get; set; }
+
+        public bool IsSold { get; set; }
       
 
         public ICollection<Images> Images { get; set; } = new List<Images>();

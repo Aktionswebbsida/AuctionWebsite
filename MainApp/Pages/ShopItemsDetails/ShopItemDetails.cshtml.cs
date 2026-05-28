@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace MainApp.Pages.ShopItemsDetails
 {
@@ -34,6 +35,8 @@ namespace MainApp.Pages.ShopItemsDetails
         public int Id { get; set; }
 
         public bool IsAuctionClosed { get; set; } = false;
+
+        public int? currentId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         public async Task<IActionResult> OnGetAsync()
         {
           

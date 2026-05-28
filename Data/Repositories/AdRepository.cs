@@ -89,5 +89,23 @@ namespace Data.Repositories
                
             return null;
         }
+
+        public async Task<Ad?> BuyNow(int adId, int userId)
+        {
+            var ad = await GetAdByIdAsync(adId);
+            if (ad != null)
+            {
+               
+
+                ad.IsClosed = true;
+                ad.IsSold = true;
+                ad.WinnerId = userId;
+
+            }
+
+            return ad;
+            
+
+        }
     }
 }

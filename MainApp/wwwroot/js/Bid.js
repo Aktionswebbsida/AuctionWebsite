@@ -234,6 +234,73 @@ async function triggerwinning(adid) {
         console.error("Fetch error");
     }
 }
+//const buyNowBtn = document.getElementById("buyNowBtn");
+
+//if (buyNowBtn) {
+
+//    buyNowBtn.addEventListener("click", async function () {
+
+//        try {
+
+//            const userId = buyNowBtn.dataset.userid;
+
+//            const response = await fetch(
+//                `https://localhost:7284/bids/buynow/${currentAdId}/userid/${userId}`,
+//                {
+//                    method: "POST",
+//                    headers: {
+//                        "X-Requested-With": "XMLHttpRequest",
+//                        "Content-Type": "application/json"
+//                    }
+//                });
+
+//            if (response.ok) {
+//                console.log("Bought");
+//            }
+//            else {
+//                console.log(await response.text());
+//            }
+
+//        } catch (err) {
+
+//            console.error(err);
+//        }
+//    });
+//}
+
+const buyNowBtn = document.getElementById("buyNowBtn");
+if (buyNowBtn) {
+    buyNowBtn.addEventListener("click", async function () {
+        try {
+            const userId = buyNowBtn.dataset.userid;
+            const response = await fetch(`https://localhost:7284/bids/buynow/${currentAdId}/userid/${userId}`, {
+                method: "POST",
+
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Content-Type": "application/json"
+
+                }
+
+
+            });
+
+            if (response.ok) {
+                console.log("Bought");
+            }
+            else {
+              
+                console.log(await response.text());
+
+
+            }
+        } catch (err) {
+            
+
+            console.error(err);
+        }
+    })
+}
 connection.on("YouWon", function (winner) {
 
     if (auctionTimer) clearInterval(auctionTimer);
@@ -284,14 +351,12 @@ connection.on("YouWon", function (winner) {
     //    }
     //}
 
-    let auctionStatus = document.getElementById("auctionStatus");
+    let auctionStatus = document.getElementById("bidContainer");
 
-    if (!auctionStatus) {
-        const bidContainer = document.getElementById("bidContainer");
+    if (auctionStatus) {
+     
 
-        auctionStatus = document.createElement("div");
-        auctionStatus.id = "auctionStatus";
-
+        
         auctionStatus.innerHTML = `<div class="alert alert-danger shadow-sm mt-2">
         auction slut 
           <div id="winnerDisplay" class="list-group-item bg-success text-white border-0 mb-1 rounded mt-2">
@@ -301,15 +366,106 @@ connection.on("YouWon", function (winner) {
                                 `
                                
 
-        if (bidContainer) {
-            bidContainer.replaceWith(auctionStatus);
-        }
-
     }
     console.log("Winner", winner.userName)
     
 });
 
+//connection.on("BuyNow", function (winner) {
+
+//    if (auctionTimer) clearInterval(auctionTimer);
+
+//    winnerProcess = true;
+
+//    CleanUi();
+
+//    const timeDisplay = document.getElementById("timeDisplay");
+
+//    if (timeDisplay) {
+//        timeDisplay.innerHTML = "SOLD";
+//    }
+
+//    const displayName = winner.userName || winner.name || "Unknown";
+
+//    const historyList = document.getElementById("bidHistory");
+
+//    if (historyList) {
+
+//        const newEntry = document.createElement("li");
+
+//        newEntry.className =
+//            "list-group-item bg-warning text-dark border-0 mb-1 rounded";
+
+//        newEntry.innerHTML =
+//            `<strong>${displayName}</strong> used <strong>Buy Now</strong>`;
+
+//        historyList.prepend(newEntry);
+//    }
+//    let auctionStatus = document.getElementById("bidContainer");
+
+//    if (auctionStatus) {
+
+
+
+//        auctionStatus.innerHTML = `<div class="alert alert-danger shadow-sm mt-2">
+//        auction slut
+//          <div id="winnerDisplay" class="list-group-item bg-success text-white border-0 mb-1 rounded mt-2">
+//                                    <strong> Congrats ${winner.userName}</strong>
+//                                </div>
+//                                </div>
+//                                `
+
+
+//    }
+
+//    console.log("Sold to:", displayName);
+//});
+
+connection.on("BuyNow", function (winner) {
+    if (auctionTimer) clearInterval(auctionTimer);
+
+    winnerProcess = true;
+    CleanUi();
+    const TimeDisplay = document.getElementById("timeDisplay");
+    if (TimeDisplay) TimeDisplay.innerHTML = "Sålt";
+
+    const displayName = winner.userName || winner.name || "Unknown";
+
+    const historyList = document.getElementById("bidHistory");
+
+    if (historyList) {
+
+
+        const newEntry = document.createElement("li");
+        newEntry.className = "list-group-item bg-success text-white border-0 mb-1 rounded";
+
+
+        newEntry.innerHTML = ` <strong>${displayName}</strong> just bought <strong>Now</strong>`;
+
+        historyList.prepend(newEntry);
+
+
+       
+
+    }
+    let auctionStatus = document.getElementById("bidContainer");
+
+    if (auctionStatus) {
+
+
+
+        auctionStatus.innerHTML = `<div class="alert alert-danger shadow-sm mt-2">
+        auction slut 
+          <div id="winnerDisplay" class="list-group-item bg-success text-white border-0 mb-1 rounded mt-2">
+                                    <strong> Congrats ${displayName}</strong>
+                                </div>
+                                </div>
+                                `
+
+
+    }
+    console.log("solt to", displayName);
+});
 
 connection.start().then(() => console.log("SignalR connected")).catch(err => console.error(err.toString()));
 

@@ -20,6 +20,6 @@ namespace Business.Interfaces
 
         Task<WinnerDTO?> AnnoceWinner(int adId);
 
-
+        Task<BuyNowDTO?> BuyNow(int adId, int userId);
     }
 }

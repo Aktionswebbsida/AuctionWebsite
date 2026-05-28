@@ -276,6 +276,38 @@ namespace Business.Services
             }
         }
 
-        
+        public async Task<BuyNowDTO?> BuyNow(int adId, int userId)
+        {
+            try
+            {
+                var winner = await _addRepository.BuyNow(adId, userId);
+                if (winner == null) return null;
+
+               
+                await _addRepository.SaveChangesAsync();
+
+                var mapp = new BuyNowDTO
+                {
+                    AdID = adId,
+                    IsClosed = true,
+                    WinnerId = userId,
+                    IsSold = true,
+                    Name = winner.Seller?.FirstName ?? "Umknown seller",
+
+                };
+
+
+                await _HubContext.Clients.Group($"adId:{mapp.AdID}").SendAsync("BuyNow",mapp );
+                return mapp;
+
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while annoncing the winner: {ex.Message}");
+                throw;
+            }
+        }
     }
 }

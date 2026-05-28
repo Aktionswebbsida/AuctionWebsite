@@ -20,6 +20,8 @@ namespace Data.Repositories
 
         Task<Ad?> AnnoceWinner(int adId);
 
+        Task<Ad?> BuyNow(int adId, int userId);
+
         Task SaveChangesAsync ();
     }
 }
