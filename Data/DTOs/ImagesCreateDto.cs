@@ -12,7 +12,7 @@ namespace Data.DTOs
         public string Description { get; set; } = string.Empty;
 
         [Required]
-        [Url(ErrorMessage = "Please enter a valid URL.")]
+       
         public string Url { get; set; } = string.Empty;
 
 

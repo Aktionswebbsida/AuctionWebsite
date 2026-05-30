@@ -13,7 +13,7 @@
                 </div>
                 <div class="card-body">
        
-                    <form method="post">
+                    <form method="post" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group mb-3">
                             <label asp-for="NewAd.Title" class="form-label">Title</label>
@@ -36,8 +36,8 @@
                                 <span asp-validation-for="NewAd.StartingPrice" class="text-danger"></span>
                             </div>
                         <div class="form-group mb-3">
-                            <label asp-for="NewImages[0].Url" class="form-label">Url</label>
-                            <input asp-for="NewImages[0].Url" class="form-control" placeholder="e.g. IPhone jpeg" />
+                            <label asp-for="NewImages[0].Url" class="form-label">Upload image</label>
+                            <input type="file" asp-for="NewImages[0].Url" class="form-control" accept="image/*" placeholder="e.g. IPhone jpeg" />
                             <span asp-validation-for="NewImages[0].Url" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">

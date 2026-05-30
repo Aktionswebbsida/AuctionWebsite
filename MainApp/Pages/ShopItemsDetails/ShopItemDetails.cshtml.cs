@@ -138,13 +138,7 @@ namespace MainApp.Pages.ShopItemsDetails
                 ModelState.AddModelError(string.Empty, errormessage);
                 return Page();
             }
-            if(AddBid.BidAmount > (Ads.StartingPrice * 100))
-            {
-                var errormessage = "100 times at a time try again";
-                if(Request.Headers["X-Requested-With"] == "XMLHttpRequest") return new BadRequestObjectResult(errormessage);
-                ModelState.AddModelError(string.Empty, errormessage);
-                return Page();
-            }
+            
 
             if(AddBid.BidAmount <= Ads.StartingPrice)
             {

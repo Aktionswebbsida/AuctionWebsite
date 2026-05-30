@@ -1,5 +1,6 @@
 using Data.DTOs;
 using Data.Entities;
+using MainApp.Responses;
 using MainApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -53,7 +54,7 @@ namespace MainApp.Pages.Seller
                     {
                         UpdateImages = AdDTO.Images.Select(img => new ImagesUpdateViewModel
                         {
-                            Url = img.Url,
+                            ExistingUrls = img.Url,
                             Description = img.Description
                         }).ToList();
                     }
@@ -91,17 +92,7 @@ namespace MainApp.Pages.Seller
                 return Page();
             }
 
-            if (UpdateImages != null && UpdateImages.Any())
-            {
-                foreach (var image in UpdateImages)
-                {
-                    if (!string.IsNullOrWhiteSpace(image.Url))
-                    {
-                        UpdateAd.Images.Add(image);
-                    }
-                }
-            }
-
+            
             UpdateAd.SellerId = user.Id;
 
             ModelState.Remove("UpdateAd.SellerId");
@@ -115,17 +106,62 @@ namespace MainApp.Pages.Seller
 
 
 
-            if (UpdateImages != null && UpdateImages.Count > 0)
-            {
-                var validImages = UpdateImages.Where(img => !string.IsNullOrWhiteSpace(img.Url)).ToList();
-                UpdateImages = validImages;
-            }
+          
 
 
 
 
             var client = HttpClientFactory.CreateClient("APIClient");
-            var response = await client.PutAsJsonAsync($"api/Ad/{UpdateAd.AdID}", UpdateAd);
+            var imageDtos = new List<UpdateImagesDto>();
+
+
+            if (UpdateImages != null)
+            {
+                foreach (var item in UpdateImages)
+                {
+                    if (item.Url != null)
+                    {
+                        using var content = new MultipartFormDataContent();
+                        using var streamContent = new StreamContent(item.Url!.OpenReadStream());
+                        content.Add(streamContent, "file", item.Url.FileName);
+
+                        var imgResponse = await client.PostAsync("api/Image/ImgUpload", content);
+
+                        if (imgResponse.IsSuccessStatusCode)
+                        {
+                            var result = await imgResponse.Content.ReadFromJsonAsync<ImgUploadResponse>();
+                            if (result?.Url != null)
+                            {
+                                imageDtos.Add(new UpdateImagesDto
+                                {
+                                    Description = item.Description,
+                                    Url = result.Url
+                                });
+                            }
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(item.ExistingUrls))
+                    {
+                        imageDtos.Add(new UpdateImagesDto
+                        {
+                            Description = item.Description,
+                            Url = item.ExistingUrls
+                        });
+                    }
+                }
+            }
+            var final = new
+            {
+               UpdateAd.Title,
+                UpdateAd.Description,
+                UpdateAd.StartDate,
+                UpdateAd.EndDate,
+                UpdateAd.Place,
+                UpdateAd.StartingPrice,
+                UpdateAd.SellerId,
+                Images = imageDtos
+            };
+            var response = await client.PutAsJsonAsync($"api/Ad/{UpdateAd.AdID}", final);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToPage("/Seller/MyAds");

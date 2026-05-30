@@ -1,4 +1,6 @@
+using Data.DTOs;
 using Data.Entities;
+using MainApp.Responses;
 using MainApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +30,8 @@ namespace MainApp.Pages.Seller
         public List<ImagesCreateViewModel> NewImages { get; set; } = new List<ImagesCreateViewModel>();
 
 
+
+
         public void OnGet()
         {
             if(NewImages == null || NewImages.Count == 0)
@@ -53,16 +57,7 @@ namespace MainApp.Pages.Seller
                 return Page();
             }
 
-            if(NewImages != null && NewImages.Any()) { 
-                foreach(var image in NewImages)
-                {
-                    if(!string.IsNullOrWhiteSpace(image.Url))
-                    {
-                        NewAd.Images.Add(image);
-                    }
-                }
-            }
-
+            
             NewAd.SellerId = user.Id;
 
             ModelState.Remove("NewAd.SellerId");
@@ -76,17 +71,52 @@ namespace MainApp.Pages.Seller
 
           
 
-            if(NewImages != null &&NewImages.Count > 0)
-            {
-                var validImages = NewImages.Where(img => !string.IsNullOrWhiteSpace(img.Url)).ToList();
-                NewImages = validImages;
-            }
+           
           
 
 
 
             var client = HttpClientFactory.CreateClient("APIClient");
-            var response = await client.PostAsJsonAsync("api/Ad", NewAd);
+            var imageDtos = new List<ImagesCreateDto>();
+
+            if (NewImages != null)
+            {
+                foreach (var item in NewImages.Where(i => i.Url != null))
+                {
+                    using var content = new MultipartFormDataContent();
+                    using var streamContent = new StreamContent(item.Url!.OpenReadStream());
+                    content.Add(streamContent, "file", item.Url.FileName);
+
+                    var imgResponse = await client.PostAsync("api/Image/ImgUpload", content);
+
+                    if (imgResponse.IsSuccessStatusCode)
+                    {
+                        var result = await imgResponse.Content.ReadFromJsonAsync<ImgUploadResponse>();
+                        if (result?.Url != null)
+                        {
+                         
+                            imageDtos.Add(new ImagesCreateDto
+                            {
+                                Description = item.Description,
+                                Url = result.Url
+                            });
+                        }
+                    }
+                }
+            }
+
+            var final = new 
+            {
+                NewAd.Title,
+                NewAd.Description,
+                NewAd.StartDate,
+                NewAd.EndDate,
+                NewAd.Place,
+                NewAd.StartingPrice,
+                NewAd.SellerId,
+                Images = imageDtos
+            };
+            var response = await client.PostAsJsonAsync("api/Ad", final);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToPage("/Seller/MyAds");
