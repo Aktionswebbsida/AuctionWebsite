@@ -7,9 +7,9 @@ namespace MainApp.ViewModels
         [Required]
         [StringLength(200, ErrorMessage = "Description cannot be longer than 200 characters.")]
         public string Description { get; set; } = string.Empty;
-        [Required]
-        [Url(ErrorMessage = "Please enter a valid URL.")]
-        public string Url { get; set; } = string.Empty;
+        [Required (ErrorMessage ="Please select a image to upload")]
+        
+        public IFormFile? Url { get; set; }
 
     }
 }

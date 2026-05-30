@@ -49,10 +49,11 @@ builder.Services.AddScoped<IBidRepository, BidRepository>();
 builder.Services.AddScoped<IBidInterface, BidService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserInterface, UserService>();
+builder.Services.AddScoped<ImgConvertInterface , ImgConveterService>();
 
 var app = builder.Build();
 
-
+app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
